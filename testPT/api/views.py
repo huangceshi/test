@@ -4,7 +4,6 @@ from api import filters
 from api.baseview import Baseview
 from api.runview import Runview
 from rest_framework.decorators import action
-from collections import OrderedDict
 import json
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,24 +14,6 @@ class ModulerViewSet(Baseview):
     serializer_class = serializer.ModulerSerializer
 
     @action(methods=['get'], detail=False)
-    # def all(self, request):
-    #     list=['基础业务线','外教业务线','用户端业务线','教学业务线','增长业务线','活动课件','课程顾问','备用业务线1','备用业务线2']
-    #     modulerlist={}
-    #     posts=[]
-    #     for platformname in list:
-    #         key = models.Modular.objects.filter(platform=platformname)
-    #         value = serializer.ModulerSerializer(key, many=True).data
-    #         del value[0]
-    #         post=[]
-    #         if len(value) >0:
-    #             list=[]
-    #             for i in value:
-    #                 i = json.loads(json.dumps(i))
-    #                 list.append(i)
-    #         else:
-    #             pass
-    #         modulerlist[platformname] = list
-    #     return Response(data={'code': status.HTTP_200_OK,  'data': modulerlist})
     def all(self, request):
         list = [{'基础业务线': 1}, {'外教业务线': 2}, {'用户端业务线': 3}, {'教学业务线': 4}, {'增长业务线': 5}, {'活动课件': 6}, {'课程顾问': 7},
                 {'备用业务线1': 8},

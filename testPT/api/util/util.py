@@ -26,6 +26,16 @@ class Util():
         if apiid !='null':
             list = models.Api.objects.filter(id=apiid[0])
             list = serializer.ApiSerializer(list, many=True).data
+            print('开始用例获取\n')
+
+            lists = []
+            for i in list:
+                case = json.loads(json.dumps(i))
+                lists.append(case)
+            TestOrder.rundata['lists'] = lists
+            print(f'本次测试用例集合为：{lists}\n')
+            print(f'本次测试用例数量位：{len(lists)}\n')
+
         else:
             if model[0] > 10:
                 list = models.Api.objects.filter(modular=model[0])
@@ -40,23 +50,67 @@ class Util():
                 print(f'本次测试用例集合为：{lists}\n')
                 print(f'本次测试用例数量位：{len(lists)}\n')
             elif model[0] < 10:
-                # list = models.Modular.objects.filter(id=model[0])
-                # list = serializer.ModulerSerializer(list, many=True).data
-                # list =
-                # print(list)
-                # print(type(list))
-                pass
+                #1.数据库查询获取模块列表，
+                platformname = models.Modular.objects.filter(id=model[0])
+                platformname = serializer.ModulerSerializer(platformname, many=True).data
+                platformname = json.loads(json.dumps(platformname[0]))
+                platformname = platformname['platform']
+                #根据平台名称，查找模块列表
+                modularlist = models.Modular.objects.filter(platform=platformname)
+                modularname = serializer.ModulerSerializer(modularlist, many=True).data
+                del modularname[0]
+                modularlists = []
+                for i in modularname:
+                    modularname = json.loads(json.dumps(i))
+                    modularid=modularname['id']
+                    modularlists.append(modularid)
+                print(modularlists)
+                #2.遍历模块列表获取每个模块的列表的数据，放在测试list里面，
+                alllists=[]
+                for i in modularlists:
+                    list = models.Api.objects.filter(modular=i)
+                    list = serializer.ApiSerializer(list, many=True).data
+                    print('开始用例获取\n')
+
+
+                    for i in list:
+                        case = json.loads(json.dumps(i))
+                        alllists.append(case)
+                TestOrder.rundata['lists'] = alllists
+                print(f'本次测试用例集合为：{alllists}\n')
+                print(f'本次测试用例数量位：{len(alllists)}\n')
 
             else:
-                pass
+                # 1.数据库查询获取模块列表，
+                platforlist=[1,2,3,4,5,6,7,8,9]
+                modularlists = []
+                for i in platforlist:
+                    platformname = models.Modular.objects.filter(id=i)
+                    platformname = serializer.ModulerSerializer(platformname, many=True).data
+                    platformname = json.loads(json.dumps(platformname[0]))
+                    platformname = platformname['platform']
+                    # 根据平台名称，查找模块列表
+                    modularlist = models.Modular.objects.filter(platform=platformname)
+                    modularname = serializer.ModulerSerializer(modularlist, many=True).data
+                    del modularname[0]
+                    for i in modularname:
+                        modularname = json.loads(json.dumps(i))
+                        modularid = modularname['id']
+                        modularlists.append(modularid)
+                    print(modularlists)
+                # 2.遍历模块列表获取每个模块的列表的数据，放在测试list里面，
+                alllists = []
+                for i in modularlists:
+                    list = models.Api.objects.filter(modular=i)
+                    list = serializer.ApiSerializer(list, many=True).data
+                    print('开始用例获取\n')
 
-
-
-
-
-
-
-
+                    for i in list:
+                        case = json.loads(json.dumps(i))
+                        alllists.append(case)
+                TestOrder.rundata['lists'] = alllists
+                print(f'本次测试用例集合为：{alllists}\n')
+                print(f'本次测试用例数量位：{len(alllists)}\n')
 
 
 
