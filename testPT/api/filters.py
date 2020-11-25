@@ -5,17 +5,18 @@ from api import models
 class ModulerFilter(django_filters.rest_framework.FilterSet):
     platform = django_filters.rest_framework.CharFilter(field_name='platform', lookup_expr='icontains')
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
+    moduless = django_filters.rest_framework.CharFilter(field_name='moduless', lookup_expr='icontains')
     class Meta:
         model = models.Modular
-        fields = ['platform','id']
+        fields = ['platform','id','moduless']
 
 
 
 class UserFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
     email = django_filters.rest_framework.CharFilter(field_name='email', lookup_expr='icontains')
-    username = django_filters.rest_framework.CharFilter(field_name='email', lookup_expr='icontains')
-    password = django_filters.rest_framework.CharFilter(field_name='email', lookup_expr='icontains')
+    username = django_filters.rest_framework.CharFilter(field_name='username', lookup_expr='icontains')
+    password = django_filters.rest_framework.CharFilter(field_name='password', lookup_expr='icontains')
     class Meta:
         model = models.User
         fields = ['id','email','username','password']
@@ -52,17 +53,19 @@ class CursorFilter(django_filters.rest_framework.FilterSet):
 
 class ApiFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
-    modular_id = django_filters.rest_framework.CharFilter(field_name='modular_id', lookup_expr='icontains')
+    modular = django_filters.rest_framework.NumberFilter(field_name='modular_id')
+    casename = django_filters.rest_framework.CharFilter(field_name='casename', lookup_expr='icontains')
 
     class Meta:
         model = models.Api
-        fields = ['id','modular_id']
+        fields = ['id','modular','casename']
 
 class RunFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
     modular_id = django_filters.rest_framework.CharFilter(field_name='modular_id', lookup_expr='icontains')
     user_id = django_filters.rest_framework.CharFilter(field_name='user_id', lookup_expr='icontains')
+    api_id = django_filters.rest_framework.CharFilter(field_name='api_id', lookup_expr='icontains')
 
     class Meta:
         model = models.Run
-        fields = ['id','modular_id','user_id']
+        fields = ['id','modular_id','user_id','api_id']

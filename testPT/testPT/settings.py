@@ -50,12 +50,53 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+#
+# # 配置白名单或者全部允许
+#
+# # 全部允许配置
+# CORS_ORIGIN_ALLOW_ALL = True
+# # 白名单配置
+# CORS_ORIGIN_WHITELIST = (
+#     '127.0.0.1:8001',
+#     'localhost:8001',
+# )
+# # 允许cookie
+# CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作
+#
+# # 允许的请求方式
+# CORS_ALLOW_METHODS = (
+#  'DELETE',
+#  'GET',
+#  'OPTIONS',
+#  'PATCH',
+#  'POST',
+#  'PUT',
+#  'VIEW',
+# )
+# # 允许的请求头
+# CORS_ALLOW_HEADERS = (
+#  'XMLHttpRequest',
+#  'X_FILENAME',
+#  'accept-encoding',
+#  'authorization',
+#  'content-type',
+#  'dnt',
+#  'origin',
+#  'user-agent',
+#  'x-csrftoken',
+#  'x-requested-with',
+#  'Pragma',
+# )
+#
+
 
 ROOT_URLCONF = 'testPT.urls'
 

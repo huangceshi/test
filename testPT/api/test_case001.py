@@ -1,7 +1,5 @@
-from api.util import util
+
 from api.util.testcase import Tesstcase
-import pytest
-import unittest
 from api.util.mytest import Myunittest
 
 
@@ -14,6 +12,9 @@ class TestOrder(Myunittest):
     def test_001(self):
         runid = TestOrder.rundata['runid']
         rundata = TestOrder.rundata['lists']
+        print(f'本次测试用例数量问：{len(rundata)}\n')
+        print(f'本次测试用例集合为：{rundata}\n')
+
 
         for i in rundata:
             print('------------------------------------------------------------------------------------------------------我是华丽的分界线-----'

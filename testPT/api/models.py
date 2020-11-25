@@ -13,10 +13,11 @@ class   User(models.Model):
 
 class Modular(models.Model):
     """模块表"""
-    platform = models.CharField(verbose_name='平台',max_length=45,unique=True)
+    platform = models.CharField(verbose_name='平台',max_length=45,null=True)
     moduless =   models.CharField(verbose_name='模块名',max_length=45,null=True)
     status = models.CharField(verbose_name='模块状态', max_length=4, choices=(('1', '启用'),('2', '删除')), default='1')
     createtime =models.DateTimeField(verbose_name='创建时间')
+
 
 class   Environmental(models.Model):
     """环境表"""
@@ -51,6 +52,7 @@ class   Run(models.Model):
     createtime = models.DateTimeField(verbose_name='创建时间')
     modular = models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=Modular)
     user = models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=User)
+    api_id = models.CharField(verbose_name='执行id', max_length=45, null=True)
 
 class Notice(models.Model):
     """消息通知表"""

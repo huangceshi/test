@@ -2,18 +2,9 @@ from api import models
 from api import serializer
 import jsonpath
 import json
-import time
-from api.data import HTMLTestRunner_cn
 import pytest
-
-
-
-from api.test_case import TestOrder
-import smtplib
+from api.test_case001 import TestOrder
 import time
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.mime.text import MIMEText
@@ -27,23 +18,47 @@ class Util():
         TestOrder.rundata={}
         #根据入参查询用例list，然后循环调用执行用例
         model=jsonpath.jsonpath(data,'$..modular')
+        apiid = jsonpath.jsonpath(data, '$..api_id')[0]
         id = jsonpath.jsonpath(data, '$..id')[0]
         userid = jsonpath.jsonpath(data, '$..user')[0]
         TestOrder.rundata['runid']=id
-        list = models.Api.objects.filter(modular=model[0])
-        list =serializer.ApiSerializer(list,many=True).data
-        print('开始用例获取\n')
+        #判断如果apiid不为null，则运行指定apiid的用例
+        if apiid !='null':
+            list = models.Api.objects.filter(id=apiid[0])
+            list = serializer.ApiSerializer(list, many=True).data
+        else:
+            if model[0] > 10:
+                list = models.Api.objects.filter(modular=model[0])
+                list = serializer.ApiSerializer(list, many=True).data
+                print('开始用例获取\n')
 
-        # for i in list:
-        #     print('开始执行用例')
-        #     case = json.loads(json.dumps(i))
-        #     Tesstcase(case,id).front()
-        lists =[]
-        for i in list:
-            case = json.loads(json.dumps(i))
-            lists.append(case)
-        TestOrder.rundata['lists']=lists
-        print(f'本次测试用例集合为：{lists}\n')
+                lists = []
+                for i in list:
+                    case = json.loads(json.dumps(i))
+                    lists.append(case)
+                TestOrder.rundata['lists'] = lists
+                print(f'本次测试用例集合为：{lists}\n')
+                print(f'本次测试用例数量位：{len(lists)}\n')
+            elif model[0] < 10:
+                # list = models.Modular.objects.filter(id=model[0])
+                # list = serializer.ModulerSerializer(list, many=True).data
+                # list =
+                # print(list)
+                # print(type(list))
+                pass
+
+            else:
+                pass
+
+
+
+
+
+
+
+
+
+
 
         #开始进行测试
 
@@ -53,6 +68,9 @@ class Util():
         report_path = address+'/api/report/' + repotrname + '.html'
         pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
         # pytest.main(['-k', '-m','order','--arruredir=./api/report/allure'])
+
+
+
 
         #进行邮件发送通知
         key =models.User.objects.filter(id=userid)
