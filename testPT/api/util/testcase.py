@@ -5,12 +5,12 @@ import json
 from api import models
 from api import serializer
 import jsonpath
-import os
+
 
 
 class Tesstcase():
 
-    def __init__(self,case,id):
+    def __init__(self,case,id,apiid):
 
         self.testcase = case['id']
         self.testname = case['casename']
@@ -24,7 +24,7 @@ class Tesstcase():
         self.save = case['case_save']
         self.postpostposition = case['case_postpostposition']
         self.runid=id
-
+        self.apiid = apiid
         print(f'初始化测试用例id：{self.testcase}，测试昵称{self.testcase},请求方式：{self.type},请求地址：{self.url},请求值{self.data},上传文件名称{self.file_name},文件上传参数：{self.file_data}')
 
     def front(self):
@@ -38,21 +38,21 @@ class Tesstcase():
             self.data = json.loads(self.data)
 
 
-        # replace 参数json化
+        # replace 参数json化，替换参数进行json化
         if self.replace =='null':
             pass
         else:
             self.replace = self.replace.replace("'", "\"")
             self.replace = json.loads(self.replace)
 
-        # save 参数json化
+        # save 参数json化  保存字段数据，进行json化
         if self.save == 'null':
             pass
         else:
             self.save = self.save.replace("'", "\"")
             self.save = json.loads(self.save)
 
-        # check 参数json化
+        # check 参数json化 检查字段进行json参数化
         if self.check == 'null':
             pass
         else:
@@ -67,6 +67,7 @@ class Tesstcase():
                 self.header = {'Content-Type': 'application/json;charset=UTF-8'}
 
             else:
+                #如果是文件上传，则替换文件上传请求的header
                 self.header = {'Content-Disposition': 'form-data', 'Accept-Encoding': 'gzip',
                                'User-Agent': 'okhttp/3.11.0', 'Connection': 'keep-alive'}
                 file_address = {'file': ('1', 'open(".api/data/upload/1", "rb")')}
@@ -81,6 +82,7 @@ class Tesstcase():
             pass
         else:
             for k in self.replace.keys():
+                #替换token，需要存在token
                 if k == 'token':
                     key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
                     value = serializer.CursorSerializer(key, many=True).data
@@ -106,6 +108,12 @@ class Tesstcase():
         client.issave(self.save,result.text)
         client.checklist(self.check,result)
         client.processing(self.postpostposition)
+
+        if self.apiid != 'null':
+            resultlist=[]
+            text=result.text.replace("\"", "'")
+            resultlist.append(text)
+            models.Run.objects.filter(id=self.runid).update(runsave=resultlist)
 
 
 

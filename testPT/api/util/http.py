@@ -65,7 +65,7 @@ class  Http():
 
 
     def issave(self,data,result):
-
+        #接口请求后，进行返回结果参数保存
         if data =='null':
             print(f'{self.casename}:接口不需要参数保存')
             pass
@@ -87,7 +87,7 @@ class  Http():
                     models.Cursor.objects.update(usr_key=k, user_value=value[0], createtime=nowtime, api_id=self.testcase,run_id=self.runid)
             print(f'{self.casename}:接口参数保存成功完成')
     def checklist(self,checks,result):
-
+        #接口请求后，对返回结果进行校验
         if checks == 'null':
             print(f'{self.casename}:接口没有校验点，不需要校验')
             pass

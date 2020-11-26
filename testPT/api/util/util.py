@@ -3,17 +3,16 @@ from api import serializer
 import jsonpath
 import json
 import pytest
-from api.test_case001 import TestOrder
 import time
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.mime.text import MIMEText
 import smtplib
 import os
+from api.test_case001 import TestOrder
 
 class Util():
     def ApiSelect(data):
-
         TestOrder.error=[]
         TestOrder.rundata={}
         #根据入参查询用例list，然后循环调用执行用例
@@ -22,8 +21,10 @@ class Util():
         id = jsonpath.jsonpath(data, '$..id')[0]
         userid = jsonpath.jsonpath(data, '$..user')[0]
         TestOrder.rundata['runid']=id
+
         #判断如果apiid不为null，则运行指定apiid的用例
         if apiid !='null':
+            runsave={}
             list = models.Api.objects.filter(id=apiid[0])
             list = serializer.ApiSerializer(list, many=True).data
             print('开始用例获取\n')
@@ -33,9 +34,11 @@ class Util():
                 case = json.loads(json.dumps(i))
                 lists.append(case)
             TestOrder.rundata['lists'] = lists
+            TestOrder.rundata['runsave'] = apiid
+            # runsave['lists']=lists
+            # models.Run.objects.filter(id=id).update(runsave=runsave)
             print(f'本次测试用例集合为：{lists}\n')
             print(f'本次测试用例数量位：{len(lists)}\n')
-
         else:
             if model[0] > 10:
                 list = models.Api.objects.filter(modular=model[0])
@@ -47,6 +50,7 @@ class Util():
                     case = json.loads(json.dumps(i))
                     lists.append(case)
                 TestOrder.rundata['lists'] = lists
+                TestOrder.rundata['runsave'] = "null"
                 print(f'本次测试用例集合为：{lists}\n')
                 print(f'本次测试用例数量位：{len(lists)}\n')
             elif model[0] < 10:
@@ -77,6 +81,7 @@ class Util():
                         case = json.loads(json.dumps(i))
                         alllists.append(case)
                 TestOrder.rundata['lists'] = alllists
+                TestOrder.rundata['runsave'] = "null"
                 print(f'本次测试用例集合为：{alllists}\n')
                 print(f'本次测试用例数量位：{len(alllists)}\n')
 
@@ -97,7 +102,6 @@ class Util():
                         modularname = json.loads(json.dumps(i))
                         modularid = modularname['id']
                         modularlists.append(modularid)
-                    print(modularlists)
                 # 2.遍历模块列表获取每个模块的列表的数据，放在测试list里面，
                 alllists = []
                 for i in modularlists:
@@ -109,6 +113,7 @@ class Util():
                         case = json.loads(json.dumps(i))
                         alllists.append(case)
                 TestOrder.rundata['lists'] = alllists
+                TestOrder.rundata['runsave'] = "null"
                 print(f'本次测试用例集合为：{alllists}\n')
                 print(f'本次测试用例数量位：{len(alllists)}\n')
 
@@ -120,11 +125,10 @@ class Util():
         address = os.getcwd()
         address = r"/".join(address.split("\\"))
         report_path = address+'/api/report/' + repotrname + '.html'
-        pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
+        a =pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
         # pytest.main(['-k', '-m','order','--arruredir=./api/report/allure'])
-
-
-
+        print(111)
+        print(a)
 
         #进行邮件发送通知
         key =models.User.objects.filter(id=userid)
@@ -184,6 +188,13 @@ class Util():
     # def check_reponse_total(vulue,result):
     #     assert result.status_code < vulue[3:] ,"接口相应时间超过"+k[3:]
 
+    #获取单个用例结果
+    def getrequest(data):
+        id = jsonpath.jsonpath(data, '$..id')[0]
+        data = models.Run.objects.filter(id=id)
+        data = serializer.RunSerializer(data, many=True).data
+        return data
+    #进行相等校验
     def check_nodeText_equals(k,v,result):
         route = v[6:]
         result = json.loads(result)
@@ -209,16 +220,8 @@ class Util():
                 TestOrder.error.append(k)
                 print(f'error对应的{k}值不等于预期{route}值:{e}\n')
 
-    # def check_nodeText_notequals(k,v,result):
-    #     route = v[3:]
-    #     value = jsonpath.jsonpath(result, k)
-    #     assert value != route, "对应的" + k + "值，不不等于预期" + value
 
-    # def check_nodeText_greater(k,v,result):
-    #     route = v[3:]
-    #     value = int(jsonpath.jsonpath(result, k))
-    #     assert value > route,  "对应的" + k + "值，不不等于预期" + value
-
+    #进行小于校验
     def check_nodeText_less(k,v,result):
         if k =='duration':
             route = int(v[6:])
@@ -241,7 +244,7 @@ class Util():
             except Exception as e:
                 TestOrder.error.append(k)
                 print(f'error对应的{k}值不大于预期{route}值:{e}\n')
-
+    #进行包含校验
     def check_nodeText_contains(k,v,result):
         route = v[6:]
         result = json.loads(result)
@@ -256,7 +259,7 @@ class Util():
         except Exception as e:
             TestOrder.error.append(k)
             print(f'error对应的{k}值不包含预期{route}值:{e}\n')
-
+    #进行参数长度校验
     def check_nodes_count(k,v,result):
         route = v[6:]
         result = json.loads(result)

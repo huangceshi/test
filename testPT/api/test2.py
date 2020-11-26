@@ -74,8 +74,7 @@
 
 
 a =[1,2]
-for i in a:
-    print(i)
+print(a[1])
 
 
 

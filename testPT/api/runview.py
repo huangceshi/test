@@ -2,7 +2,10 @@ from rest_framework import viewsets,status
 from rest_framework.response import Response
 import django_filters
 from api.util.util import Util
-
+import jsonpath
+from api import models
+import json
+from api import serializer
 
 class Runview(viewsets.ModelViewSet):
 
@@ -16,36 +19,32 @@ class Runview(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         # 重写数据返回格式
         data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
+        print(111)
+        print(serializer.data)
+        print(type(serializer.data))
 
-        try:
-            return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
-        finally:
-            Util.ApiSelect(data)
+        # try:
+        #     return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
+        # finally:
+        #     Util.ApiSelect(data)
 
+        Util.ApiSelect(data)
+        requestdata = Util.getrequest(data)
+        # id = jsonpath.jsonpath(data, '$..id')[0]
+        # print(222)
+        # print(id)
+        # requestdata = models.Run.objects.filter(id=id)
+        # requestdata = serializer.ApiSerializer(requestdata, many=True).data
+        # request = json.loads(json.dumps(requestdata))
+        # serializer.data['request']=request
+        # data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
+        # requestdata = models.Run.objects.filter(id=id)
+        # requestdata = serializer.RunSerializer(requestdata, many=True).data
+        print(3333)
+        print(requestdata)
+        data = {'status_code': status.HTTP_200_OK, 'data': requestdata}
+        return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
 
-
-
-
-
-
-
-
-
-
-    #修改
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
-            instance._prefetched_objects_cache = {}
-        data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
-        return Response(data)
     #多个查询
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

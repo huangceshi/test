@@ -48,10 +48,11 @@ class Api(models.Model):
 
 class   Run(models.Model):
     """运行记录表"""
-    run_url = models.CharField(verbose_name='运行结果链接',max_length=45,null=True)
-    createtime = models.DateTimeField(verbose_name='创建时间')
-    modular = models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=Modular)
-    user = models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=User)
+    run_url = models.CharField(verbose_name='运行结果链接',max_length=450,null=True)
+    runsave = models.JSONField(verbose_name='运行结果链接', max_length=4500, null=True)
+    createtime = models.DateTimeField(verbose_name='创建时间',null=True)
+    modular = models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=Modular,null=True)
+    user = models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=User ,null=True)
     api_id = models.CharField(verbose_name='执行id', max_length=45, null=True)
 
 class Notice(models.Model):
