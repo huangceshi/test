@@ -109,6 +109,7 @@ class Tesstcase():
         client.checklist(self.check,result,self.testcase)
         client.processing(self.postpostposition)
 
+        #判断如果是单接口运行，则存储测试结果，方便返回调用显示
         if self.apiid != 'null':
             resultlist=[]
             text=result.text.replace("\"", "'")

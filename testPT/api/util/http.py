@@ -111,8 +111,14 @@ class  Http():
             print(f'{self.casename}:接口没有后置sql操作需要执行')
             pass
         else:
-            print(f'{self.casename}:接口开始进行后置sql执行:{postpostposition}')
             DB.mysql(postpostposition)
+            print(f'{self.casename}:接口开始进行后置sql执行:{postpostposition}')
+        #
+        #如果存储为list，则进行list循环操作
+        # else:
+        #     for i in postpostposition:
+        #         DB.mysql(i)
+        #         print(f'{self.casename}:接口开始进行后置sql执行:{postpostposition}')
 
 
 
