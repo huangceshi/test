@@ -1,8 +1,7 @@
-from api import serializer
 from api import models
-from api import filters
-from api.baseview import Baseview
-from api.runview import Runview
+from api.view import filters, serializer
+from api.view.baseview import Baseview
+from api.view.runview import Runview
 from rest_framework.decorators import action
 import json
 from rest_framework.response import Response

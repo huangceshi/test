@@ -1,9 +1,8 @@
 
 from api.util.http import Http
-import allure
 import json
 from api import models
-from api import serializer
+from api.view import serializer
 import jsonpath
 
 

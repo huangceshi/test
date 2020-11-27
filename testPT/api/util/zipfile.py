@@ -16,11 +16,9 @@ def zip_file(input_path, output_path, output_name,repotrname):
     f = zipfile.ZipFile(output_path + '/' + output_name, 'w', zipfile.ZIP_DEFLATED)
     filelists = []
     get_zip_file(input_path, filelists)
-    print(filelists)
     for file in filelists:
         if 'html' in file:
             repotrname = repotrname + '.html'
-            print(repotrname)
             f.write(input_path +'/' +  repotrname, arcname=repotrname)
         else:
             f.write(input_path + 'assets/style.css', arcname='assets/style.css')

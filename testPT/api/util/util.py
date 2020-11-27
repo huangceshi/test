@@ -1,5 +1,5 @@
 from api import models
-from api import serializer
+from api.view import serializer
 import jsonpath
 import json
 import pytest
@@ -70,7 +70,6 @@ class Util():
                     modularname = json.loads(json.dumps(i))
                     modularid=modularname['id']
                     modularlists.append(modularid)
-                print(modularlists)
                 #2.遍历模块列表获取每个模块的列表的数据，放在测试list里面，
                 alllists=[]
                 for i in modularlists:

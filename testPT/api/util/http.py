@@ -4,7 +4,7 @@ import jsonpath
 from api import models
 import time
 import json
-from api import serializer
+from api.view import serializer
 from  api.util import util
 from api.util.db import DB
 
