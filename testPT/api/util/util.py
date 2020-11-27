@@ -11,14 +11,14 @@ import smtplib
 import os
 from api.test_case001 import TestOrder
 from api.util.zipfile import zip_file
-
+import  shutil
 
 class Util():
     def ApiSelect(data):
         TestOrder.error=[]
         TestOrder.rundata={}
         #根据入参查询用例list，然后循环调用执行用例
-        model=jsonpath.jsonpath(data,'$..modular')
+        model=jsonpath.jsonpath(data,'$..modular')[0]
         apiid = jsonpath.jsonpath(data, '$..api_id')[0]
         id = jsonpath.jsonpath(data, '$..id')[0]
         userid = jsonpath.jsonpath(data, '$..user')[0]
@@ -26,11 +26,10 @@ class Util():
 
         #判断如果apiid不为null，则运行指定apiid的用例
         if apiid !='null':
-            runsave={}
-            list = models.Api.objects.filter(id=apiid[0])
+            # runsave={}
+            list = models.Api.objects.filter(id=apiid)
             list = serializer.ApiSerializer(list, many=True).data
             print('开始用例获取\n')
-
             lists = []
             for i in list:
                 case = json.loads(json.dumps(i))
@@ -42,8 +41,8 @@ class Util():
             print(f'本次测试用例集合为：{lists}\n')
             print(f'本次测试用例数量位：{len(lists)}\n')
         else:
-            if model[0] > 10:
-                list = models.Api.objects.filter(modular=model[0])
+            if model > 10:
+                list = models.Api.objects.filter(modular=model)
                 list = serializer.ApiSerializer(list, many=True).data
                 print('开始用例获取\n')
 
@@ -55,9 +54,10 @@ class Util():
                 TestOrder.rundata['runsave'] = "null"
                 print(f'本次测试用例集合为：{lists}\n')
                 print(f'本次测试用例数量位：{len(lists)}\n')
-            elif model[0] < 10:
+            elif model < 10:
                 #1.数据库查询获取模块列表，
-                platformname = models.Modular.objects.filter(id=model[0])
+
+                platformname = models.Modular.objects.filter(id=model)
                 platformname = serializer.ModulerSerializer(platformname, many=True).data
                 platformname = json.loads(json.dumps(platformname[0]))
                 platformname = platformname['platform']
@@ -126,7 +126,7 @@ class Util():
         repotrname = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
         address = os.getcwd()
         address = r"/".join(address.split("\\"))
-        report_path_del = address+'/api/report/' + repotrname + '.html'
+        report_path_del = address+'/api/report'
         report_path = address+'/api/report.zip'
         pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
         # pytest.main(['-k', '-m','order','--arruredir=./api/report/allure'])
@@ -143,10 +143,14 @@ class Util():
         mail_body = len(TestOrder.error)
         receiver = key[0]['email']
         file_names = report_path
-        Util.sendEmail(mail_body, receiver, file_names,report_path_del)
+        Util.sendEmail(mail_body, receiver, file_names)
+
+        #删除测试报告和文件
+        os.remove(file_names)
+        shutil.rmtree(report_path_del)
 
 
-    def sendEmail( mail_body, receiver, file_names,report_path_del):
+    def sendEmail( mail_body, receiver, file_names):
         """
         :param subject: 邮件标题
         :param mail_body: 邮件正文，可以是文字，也可以是html格式
@@ -188,8 +192,7 @@ class Util():
             print("邮件发送失败！\n")
         else:
             print("邮件发送成功！\n")
-            os.remove(file_names)
-            os.remove(report_path_del)
+
         finally:
             smtp.quit()
 
