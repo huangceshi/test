@@ -25,6 +25,7 @@ class TestOrder(Myunittest):
 
         count = TestOrder.error
         print(f'本次用例执行完成，校验点失败数量：{len(count)}')
+        print("本次用例执行，错误的用例id为:")
         print(count)
         assert 0==len(count)
 

@@ -106,7 +106,7 @@ class Tesstcase():
         client = Http(method=self.type, url=self.url, data=self.data,file_name=self.file_name,file_data=self.file_data,header=self.header,name=self.testname,save=self.save,testcase=self.testcase,runid=self.runid )
         result =client.send()
         client.issave(self.save,result.text)
-        client.checklist(self.check,result)
+        client.checklist(self.check,result,self.testcase)
         client.processing(self.postpostposition)
 
         if self.apiid != 'null':

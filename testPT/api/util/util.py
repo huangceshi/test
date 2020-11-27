@@ -143,12 +143,8 @@ class Util():
         mail_body = len(TestOrder.error)
         receiver = key[0]['email']
         file_names = report_path
-
-        #压缩测试报告
-
-
-
         Util.sendEmail(mail_body, receiver, file_names,report_path_del)
+
 
     def sendEmail( mail_body, receiver, file_names,report_path_del):
         """
@@ -181,9 +177,6 @@ class Util():
         att['Content-Disposition'] = 'attachment;filename="%s"' % (file_names)
         msg.attach(att)
 
-
-
-
             # 登录并发送邮件
         try:
             smtp = smtplib.SMTP()
@@ -195,7 +188,7 @@ class Util():
             print("邮件发送失败！\n")
         else:
             print("邮件发送成功！\n")
-            # os.remove(file_names)
+            os.remove(file_names)
             os.remove(report_path_del)
         finally:
             smtp.quit()
@@ -210,7 +203,7 @@ class Util():
         data = serializer.RunSerializer(data, many=True).data
         return data
     #进行相等校验
-    def check_nodeText_equals(k,v,result):
+    def check_nodeText_equals(k,v,result,case):
         route = v[6:]
         result = json.loads(result)
         try:
@@ -224,7 +217,7 @@ class Util():
             try:
                 assert int(value) == route, "对应的" +k+"值，不等于预期"+route
             except Exception as e:
-                TestOrder.error.append(k)
+                TestOrder.error.append(case)
                 print(f'error对应的{k}值不等于预期{value}：{e}\n')
         else:
             route = v[6:]
@@ -232,12 +225,13 @@ class Util():
             try:
                 assert value == route, "对应的" + k + "值，不等于预期" + route
             except Exception as e:
-                TestOrder.error.append(k)
+                TestOrder.error.append(case)
                 print(f'error对应的{k}值不等于预期{route}值:{e}\n')
 
 
     #进行小于校验
-    def check_nodeText_less(k,v,result):
+    def check_nodeText_less(k,v,result,case):
+
         if k =='duration':
             route = int(v[6:])
             try:
@@ -248,7 +242,7 @@ class Util():
             try:
                 assert int(value) < route, "对应的" + k + "值，大于预期" + route
             except Exception as e:
-                TestOrder.error.append(k)
+                TestOrder.error.append(case)
                 print(f'error对应的{k}值不大于预期{route}值:{e}\n')
         else:
             route = int(v[6:])
@@ -257,10 +251,10 @@ class Util():
             try:
                 assert value  <  route, "对应的" + k + "值，大于预期" + route
             except Exception as e:
-                TestOrder.error.append(k)
+                TestOrder.error.append(case)
                 print(f'error对应的{k}值不大于预期{route}值:{e}\n')
     #进行包含校验
-    def check_nodeText_contains(k,v,result):
+    def check_nodeText_contains(k,v,result,case):
         route = v[6:]
         result = json.loads(result)
 
@@ -272,10 +266,10 @@ class Util():
         try:
             assert route  in  value, "对应的" + k + "值，不包含预期" + route
         except Exception as e:
-            TestOrder.error.append(k)
+            TestOrder.error.append(case)
             print(f'error对应的{k}值不包含预期{route}值:{e}\n')
     #进行参数长度校验
-    def check_nodes_count(k,v,result):
+    def check_nodes_count(k,v,result,case):
         route = v[6:]
         result = json.loads(result)
         try:
@@ -287,7 +281,7 @@ class Util():
         try:
             assert count  ==  int(route), "对应的" + k + "值，长度不等于" + route
         except Exception as e:
-            TestOrder.error.append(k)
+            TestOrder.error.append(case)
             print(f'error对应的{k}值长度不符合预期{route}值:{e}\n')
 
 

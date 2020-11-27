@@ -86,7 +86,7 @@ class  Http():
                 else:
                     models.Cursor.objects.update(usr_key=k, user_value=value[0], createtime=nowtime, api_id=self.testcase,run_id=self.runid)
             print(f'{self.casename}:接口参数保存成功完成')
-    def checklist(self,checks,result):
+    def checklist(self,checks,result,case):
         #接口请求后，对返回结果进行校验
         if checks == 'null':
             print(f'{self.casename}:接口没有校验点，不需要校验')
@@ -95,13 +95,13 @@ class  Http():
             print(f'{self.casename}:接口开始进行结果校验')
             for k in checks.keys():
                 if checks[k][0:6]== 'check1':
-                    util.Util.check_nodeText_equals(k,checks[k],result.text)
+                    util.Util.check_nodeText_equals(k,checks[k],result.text,case)
                 elif checks[k][0:6]== 'check2':
-                    util.Util.check_nodeText_less(k,checks[k],result)
+                    util.Util.check_nodeText_less(k,checks[k],result,case)
                 elif checks[k][0:6]== 'check3':
-                    util.Util.check_nodeText_contains(k,checks[k],result.text)
+                    util.Util.check_nodeText_contains(k,checks[k],result.text,case)
                 elif checks[k][0:6]== 'check4':
-                    util.Util.check_nodes_count(k,checks[k],result.text)
+                    util.Util.check_nodes_count(k,checks[k],result.text,case)
                 else:
                     print(self.testcase+"校验点不对，需要注意检查")
             print(f'{self.casename}:接口校验完成')
