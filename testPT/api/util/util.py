@@ -158,7 +158,7 @@ class Util():
         :return:
         """
         if mail_body == 0:
-            mail_body ='测试通过，详情见附件'
+            mail_body ='测试通过，仅供参考，详情见附件'
         else:
             mail_body='测试失败，具体看下面日志，可以搜索error字段'
         subject='自动化测试结果邮件'

@@ -9,6 +9,7 @@ import jsonpath
 
 class Tesstcase():
 
+    #初始化数据
     def __init__(self,case,id,apiid):
 
         self.testcase = case['id']
@@ -26,6 +27,7 @@ class Tesstcase():
         self.apiid = apiid
         print(f'初始化测试用例id：{self.testcase}，测试昵称{self.testcase},请求方式：{self.type},请求地址：{self.url},请求值{self.data},上传文件名称{self.file_name},文件上传参数：{self.file_data}')
 
+    #参数替换
     def front(self):
         #之前之前，前置处理
         print(f'{self.testcase}开始请求前参数转化')
@@ -93,10 +95,17 @@ class Tesstcase():
                     value = jsonpath.jsonpath(value, '$..user_value')[0]
                     self.data[k]=value
         print('请求前参数替换完成')
+        Tesstcase.completeurl(self)
+    #补全ulr
+    def completeurl(self):
+        host = models.Config.objects.filter(key='测试环境')
+        host = serializer.ConfigSerializer(host, many=True).data
+        host = jsonpath.jsonpath(host, '$..value')[0]
+        self.url = host + self.url
+        print(self.url)
         Tesstcase.execute_case(self)
 
-
-        #执行用例
+    #用例执行
     def execute_case(self):
         """执行测试用例"""
         # -------------------------------------执行测试用例---------------------------------------

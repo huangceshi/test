@@ -37,10 +37,10 @@ class NoticeFilter(django_filters.rest_framework.FilterSet):
 
 class ConfigFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
-    config_key = django_filters.rest_framework.CharFilter(field_name='config_key', lookup_expr='icontains')
+    key = django_filters.rest_framework.CharFilter(field_name='key', lookup_expr='icontains')
     class Meta:
         model = models.Config
-        fields = ['id','config_key']
+        fields = ['id','key']
 
 class CursorFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
