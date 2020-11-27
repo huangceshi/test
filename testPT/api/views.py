@@ -9,6 +9,9 @@ from rest_framework import status
 
 
 class ModulerViewSet(Baseview):
+    """
+    模块接口
+    """
     queryset = models.Modular.objects.all()
     serializer_class = serializer.ModulerSerializer
 
@@ -35,7 +38,8 @@ class ModulerViewSet(Baseview):
                     valuelist['id'] = valuedata
                     valuelist['platformname'] = key
                 else:
-                    pass
+                    valuelist['id'] = valuedata
+                    valuelist['platformname'] = key
             modulerlist.append(valuelist)
         return Response(data={'code': status.HTTP_200_OK,  'data': modulerlist})
 
@@ -43,7 +47,6 @@ class UserViewSet(Baseview):
     queryset = models.User.objects.all()
     serializer_class = serializer.UserSerializer
     filter_class = filters.UserFilter
-
 
 class EnvironmentalViewSet(Baseview):
     queryset = models.Environmental.objects.all()
@@ -74,6 +77,7 @@ class runViewSet(Runview):
     queryset = models.Run.objects.all()
     serializer_class = serializer.RunSerializer
     filter_class = filters.RunFilter
+
 
 
 
