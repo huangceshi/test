@@ -3,5 +3,8 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/api/report/2020-11-27-10-12-13.html" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (testPT)" project-jdk-type="Python SDK" />
 </project>

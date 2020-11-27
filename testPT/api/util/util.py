@@ -10,6 +10,8 @@ from email.mime.text import MIMEText
 import smtplib
 import os
 from api.test_case001 import TestOrder
+from api.util.zipfile import zip_file
+
 
 class Util():
     def ApiSelect(data):
@@ -124,11 +126,15 @@ class Util():
         repotrname = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
         address = os.getcwd()
         address = r"/".join(address.split("\\"))
-        report_path = address+'/api/report/' + repotrname + '.html'
-        a =pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
+        report_path_del = address+'/api/report/' + repotrname + '.html'
+        report_path = address+'/api/report.zip'
+        pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
         # pytest.main(['-k', '-m','order','--arruredir=./api/report/allure'])
-        print(111)
-        print(a)
+
+        #进行测试报告压缩
+        report_path1 = address + '/api/report/'
+        report_path2 = address + '/api'
+        zip_file(report_path1, report_path2, 'report.zip', repotrname)
 
         #进行邮件发送通知
         key =models.User.objects.filter(id=userid)
@@ -137,9 +143,14 @@ class Util():
         mail_body = len(TestOrder.error)
         receiver = key[0]['email']
         file_names = report_path
-        Util.sendEmail(mail_body, receiver, file_names)
 
-    def sendEmail( mail_body, receiver, file_names):
+        #压缩测试报告
+
+
+
+        Util.sendEmail(mail_body, receiver, file_names,report_path_del)
+
+    def sendEmail( mail_body, receiver, file_names,report_path_del):
         """
         :param subject: 邮件标题
         :param mail_body: 邮件正文，可以是文字，也可以是html格式
@@ -164,11 +175,14 @@ class Util():
         msg['To'] = receiver
 
         # 附件:附件名称用英文
-        # # for file_name in file_names:
+        # for file_name in file_names:
         att = MIMEText(open(file_names, 'rb').read(), 'base64', 'utf-8')
         att["Content-Type"] = 'application/octet-stream'
         att['Content-Disposition'] = 'attachment;filename="%s"' % (file_names)
         msg.attach(att)
+
+
+
 
             # 登录并发送邮件
         try:
@@ -181,7 +195,8 @@ class Util():
             print("邮件发送失败！\n")
         else:
             print("邮件发送成功！\n")
-            os.remove(file_names)
+            # os.remove(file_names)
+            os.remove(report_path_del)
         finally:
             smtp.quit()
 

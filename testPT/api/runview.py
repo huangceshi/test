@@ -2,10 +2,6 @@ from rest_framework import viewsets,status
 from rest_framework.response import Response
 import django_filters
 from api.util.util import Util
-import jsonpath
-from api import models
-import json
-from api import serializer
 
 class Runview(viewsets.ModelViewSet):
 
@@ -19,9 +15,6 @@ class Runview(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         # 重写数据返回格式
         data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
-        print(111)
-        print(serializer.data)
-        print(type(serializer.data))
 
         # try:
         #     return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
@@ -30,18 +23,6 @@ class Runview(viewsets.ModelViewSet):
 
         Util.ApiSelect(data)
         requestdata = Util.getrequest(data)
-        # id = jsonpath.jsonpath(data, '$..id')[0]
-        # print(222)
-        # print(id)
-        # requestdata = models.Run.objects.filter(id=id)
-        # requestdata = serializer.ApiSerializer(requestdata, many=True).data
-        # request = json.loads(json.dumps(requestdata))
-        # serializer.data['request']=request
-        # data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
-        # requestdata = models.Run.objects.filter(id=id)
-        # requestdata = serializer.RunSerializer(requestdata, many=True).data
-        print(3333)
-        print(requestdata)
         data = {'status_code': status.HTTP_200_OK, 'data': requestdata}
         return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
 
