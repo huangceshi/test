@@ -25,7 +25,7 @@ SECRET_KEY = '-_ft-^kq1&5i=pb!ov_&8r+l7+jmv%h&ov&-@00ikz+vut+&14'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -47,11 +47,11 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'EXCEPTION_HANDLER': 'api.exception.custom_exception_handler',
 }
-#设置分页数量
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS':  'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10  # 每页数目
-}
+# #设置分页数量
+# REST_FRAMEWORK = {
+#     'DEFAULT_PAGINATION_CLASS':  'rest_framework.pagination.PageNumberPagination',
+#     'PAGE_SIZE': 20  # 每页数目
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,42 +65,42 @@ MIDDLEWARE = [
 ]
 
 #
-# # 配置白名单或者全部允许
-#
-# # 全部允许配置
-# CORS_ORIGIN_ALLOW_ALL = True
-# # 白名单配置
-# CORS_ORIGIN_WHITELIST = (
-#     '127.0.0.1:8001',
-#     'localhost:8001',
-# )
-# # 允许cookie
-# CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作
-#
-# # 允许的请求方式
-# CORS_ALLOW_METHODS = (
-#  'DELETE',
-#  'GET',
-#  'OPTIONS',
-#  'PATCH',
-#  'POST',
-#  'PUT',
-#  'VIEW',
-# )
-# # 允许的请求头
-# CORS_ALLOW_HEADERS = (
-#  'XMLHttpRequest',
-#  'X_FILENAME',
-#  'accept-encoding',
-#  'authorization',
-#  'content-type',
-#  'dnt',
-#  'origin',
-#  'user-agent',
-#  'x-csrftoken',
-#  'x-requested-with',
-#  'Pragma',
-# )
+# 配置白名单或者全部允许
+
+# 全部允许配置
+CORS_ORIGIN_ALLOW_ALL = True
+# 白名单配置
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8001',
+    'localhost:8001',
+)
+# 允许cookie
+CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作
+
+# 允许的请求方式
+CORS_ALLOW_METHODS = (
+ 'DELETE',
+ 'GET',
+ 'OPTIONS',
+ 'PATCH',
+ 'POST',
+ 'PUT',
+ 'VIEW',
+)
+# 允许的请求头
+CORS_ALLOW_HEADERS = (
+ 'XMLHttpRequest',
+ 'X_FILENAME',
+ 'accept-encoding',
+ 'authorization',
+ 'content-type',
+ 'dnt',
+ 'origin',
+ 'user-agent',
+ 'x-csrftoken',
+ 'x-requested-with',
+ 'Pragma',
+)
 #
 
 

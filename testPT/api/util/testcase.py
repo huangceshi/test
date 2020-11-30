@@ -4,7 +4,7 @@ import json
 from api import models
 from api.view import serializer
 import jsonpath
-
+from  api.util import util
 
 
 class Tesstcase():
@@ -25,7 +25,8 @@ class Tesstcase():
         self.postpostposition = case['case_postpostposition']
         self.runid=id
         self.apiid = apiid
-        print(f'初始化测试用例id：{self.testcase}，测试昵称{self.testcase},请求方式：{self.type},请求地址：{self.url},请求值{self.data},上传文件名称{self.file_name},文件上传参数：{self.file_data}')
+        print(f'初始化测试用例id：{self.testcase}，测试昵称{self.testname},请求方式：{self.type},请求地址：{self.url},请求值{self.data},上传文件名称{self.file_name},文件上传参数：{self.file_data}'
+              f',请求之前替换参数：{self.replace}，校验内容：{self.check}，保存参数：{self.save}，数据库操作参数：{self.postpostposition}')
 
     #参数替换
     def front(self):
@@ -40,25 +41,26 @@ class Tesstcase():
 
 
         # replace 参数json化，替换参数进行json化
-        if self.replace =='null':
-            pass
-        else:
-            self.replace = self.replace.replace("'", "\"")
-            self.replace = json.loads(self.replace)
+        # if self.replace ==[]:
+        #     pass
+        # else:
+        #     self.replace = self.replace.replace("'", "\"")
+        #     self.replace = json.loads(self.replace)
 
         # save 参数json化  保存字段数据，进行json化
-        if self.save == 'null':
-            pass
-        else:
-            self.save = self.save.replace("'", "\"")
-            self.save = json.loads(self.save)
+        # if self.save == []:
+        #     pass
+        # else:
+        #     for i in self.save:
+        #     self.save = self.save.replace("'", "\"")
+        #     self.save = json.loads(self.save)
 
         # check 参数json化 检查字段进行json参数化
-        if self.check == 'null':
-            pass
-        else:
-            self.check = self.check.replace("'", "\"")
-            self.check = json.loads(self.check)
+        # if self.check == 'null':
+        #     pass
+        # else:
+        #     self.check = self.check.replace("'", "\"")
+        #     self.check = json.loads(self.check)
 
         #替换header
         if self.type =='GET':
@@ -79,22 +81,22 @@ class Tesstcase():
 
 
 
-        if self.replace =='null':
-            pass
-        else:
-            for k in self.replace.keys():
-                #替换token，需要存在token
-                if k == 'token':
-                    key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
-                    value = serializer.CursorSerializer(key, many=True).data
-                    value = jsonpath.jsonpath(value, '$..user_value')[0]
-                    self.header['token']=value
-                else:
-                    key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
-                    value = serializer.CursorSerializer(key, many=True).data
-                    value = jsonpath.jsonpath(value, '$..user_value')[0]
-                    self.data[k]=value
-        print('请求前参数替换完成')
+        # if self.replace ==[]:
+        #     pass
+        # else:
+        #     for k in self.replace.keys():
+        #         #替换token，需要存在token
+        #         if k == 'token':
+        #             key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
+        #             value = serializer.CursorSerializer(key, many=True).data
+        #             value = jsonpath.jsonpath(value, '$..user_value')[0]
+        #             self.header['token']=value
+        #         else:
+        #             key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
+        #             value = serializer.CursorSerializer(key, many=True).data
+        #             value = jsonpath.jsonpath(value, '$..user_value')[0]
+        #             self.data[k]=value
+        # print('请求前参数替换完成')
         Tesstcase.completeurl(self)
     #补全ulr
     def completeurl(self):
@@ -104,7 +106,6 @@ class Tesstcase():
         self.url = host + self.url
         print(self.url)
         Tesstcase.execute_case(self)
-
     #用例执行
     def execute_case(self):
         """执行测试用例"""
@@ -113,6 +114,12 @@ class Tesstcase():
         # #
         client = Http(method=self.type, url=self.url, data=self.data,file_name=self.file_name,file_data=self.file_data,header=self.header,name=self.testname,save=self.save,testcase=self.testcase,runid=self.runid )
         result =client.send()
+        #如果接口请求错误，则报错
+
+        if json.loads(result.text)['code'] != 10000:
+            util.Util.dberror(self.testcase)
+            print(json.loads(result.text)['msg'])
+            return result
         client.issave(self.save,result.text)
         client.checklist(self.check,result,self.testcase)
         client.processing(self.postpostposition)

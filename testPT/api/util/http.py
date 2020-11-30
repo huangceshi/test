@@ -66,53 +66,65 @@ class  Http():
 
     def issave(self,data,result):
         #接口请求后，进行返回结果参数保存
-        if data =='null':
+
+        if data =='[]':
             print(f'{self.casename}:接口不需要参数保存')
             pass
         else:
-            print(f'{self.casename}:接口开始参数保存，保存参数为：{data}')
-            result=json.loads(result)
-            for k in data.keys():
-                try:
-                    value = jsonpath.jsonpath(result, '$..' + k)
-                except Exception as e:
-                    print(f'{self.casename}:接口参数保存格式写错：{e}')
-                nowtime =time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                key =models.Cursor.objects.filter(run_id=self.runid,usr_key=k)
+            result = json.loads(result)
+            data=json.loads(data)
+            for i in data:
+                savekey = i['key']
+                print(f'{self.casename}:接口开始参数保存，保存参数为：{savekey}')
+                savevalue = jsonpath.jsonpath(result, savekey)
+                if savevalue ==[]:
+                    print(f'{self.casename}:接口参数获取失败{savekey}')
+                nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                key = models.Cursor.objects.filter(run_id=self.runid, usr_key=savekey)
                 key = serializer.CursorSerializer(key, many=True).data
-                print(f'{self.casename}:接口开始参保存参数{k}的值{value[0]}')
-                if key==[]:
-                    models.Cursor.objects.create(usr_key=k, user_value=value[0], createtime=nowtime, api_id=self.testcase,run_id=self.runid)
+                print(f'{self.casename}:接口开始参保存参数{savekey}的值{savevalue[0]}')
+                if key == []:
+                    models.Cursor.objects.create(usr_key=savekey, user_value=savevalue[0], createtime=nowtime,
+                                                 api_id=self.testcase, run_id=self.runid)
                 else:
-                    models.Cursor.objects.update(usr_key=k, user_value=value[0], createtime=nowtime, api_id=self.testcase,run_id=self.runid)
-            print(f'{self.casename}:接口参数保存成功完成')
+                    key =json.loads(json.dumps(key))
+                    id =key[0]['id']
+                    models.Cursor.objects.filter(id=id).update(user_value=savevalue[0], createtime=nowtime)
+        print(f'{self.casename}:接口参数保存成功完成')
     def checklist(self,checks,result,case):
         #接口请求后，对返回结果进行校验
-        if checks == 'null':
+        if checks == '[]':
             print(f'{self.casename}:接口没有校验点，不需要校验')
-            pass
         else:
-            print(f'{self.casename}:接口开始进行结果校验')
-            for k in checks.keys():
-                if checks[k][0:6]== 'check1':
-                    util.Util.check_nodeText_equals(k,checks[k],result.text,case)
-                elif checks[k][0:6]== 'check2':
-                    util.Util.check_nodeText_less(k,checks[k],result,case)
-                elif checks[k][0:6]== 'check3':
-                    util.Util.check_nodeText_contains(k,checks[k],result.text,case)
-                elif checks[k][0:6]== 'check4':
-                    util.Util.check_nodes_count(k,checks[k],result.text,case)
+            checks = json.loads(checks)
+            for k in checks:
+                checktype = k['type']
+                if checktype == 'check1':
+                    util.Util.check_nodeText_equals(k['key'], k['value'], result, case)
+                elif checktype == 'check2':
+                    util.Util.check_nodeText_less(k['key'], k['value'], result, case)
+                elif checktype == 'check3':
+                    util.Util.check_nodeText_contains(k['key'], k['value'], result, case)
+                elif checktype == 'check4':
+                    util.Util.check_nodes_count(k['key'], k['value'], result, case)
                 else:
-                    print(self.testcase+"校验点不对，需要注意检查")
-            print(f'{self.casename}:接口校验完成')
+                    print(self.testcase + "校验点不对，需要注意检查")
+
+        print(f'{self.casename}:接口校验完成')
+
+
+
 
     def processing(self,postpostposition):
-        if  postpostposition == 'null':
+        print(postpostposition)
+        if  postpostposition == '[]':
             print(f'{self.casename}:接口没有后置sql操作需要执行')
-            pass
         else:
-            DB.mysql(postpostposition)
             print(f'{self.casename}:接口开始进行后置sql执行:{postpostposition}')
+            result =DB.mysql(self.testcase,self.casename,postpostposition)
+            if result > 0:
+                util.Util.dberror(self.testcase)
+
         #
         #如果存储为list，则进行list循环操作
         # else:

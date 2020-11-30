@@ -14,12 +14,13 @@ class ModulerFilter(django_filters.rest_framework.FilterSet):
 
 class UserFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')
-    email = django_filters.rest_framework.CharFilter(field_name='email', lookup_expr='icontains')
+    email = django_filters.rest_framework.CharFilter(field_name='email', lookup_expr='exact')
+    password = django_filters.rest_framework.CharFilter(field_name='password', lookup_expr='exact')
     username = django_filters.rest_framework.CharFilter(field_name='username', lookup_expr='icontains')
-    password = django_filters.rest_framework.CharFilter(field_name='password', lookup_expr='icontains')
+
     class Meta:
         model = models.User
-        fields = ['id','email','username','password']
+        fields = ['id','email','username']
 
 class EnvironmentalFilter(django_filters.rest_framework.FilterSet):
     id = django_filters.rest_framework.CharFilter(field_name='id', lookup_expr='icontains')

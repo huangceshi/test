@@ -8,7 +8,7 @@ class   User(models.Model):
     """用户表"""
     username = models.CharField(verbose_name='用户名',max_length=45,unique=True)
     password = models.CharField(verbose_name='密码',max_length=45)
-    email = models.CharField(verbose_name='邮箱',max_length=45)
+    email = models.CharField(verbose_name='邮箱',max_length=45,unique=True)
 
 
 class Modular(models.Model):
@@ -39,10 +39,10 @@ class Api(models.Model):
     case_replace=models.CharField(verbose_name='用例替换参数',max_length=4500,null=True)
     case_file_name=models.CharField(verbose_name='文件上传名称',max_length=500,null=True)
     case_file_data=models.CharField(verbose_name='上传文件接口请求参数',max_length=450,null=True)
-    case_check=models.CharField(verbose_name='用例检查点',max_length=450,null=True)
+    case_check=models.CharField(verbose_name='用例检查点',max_length=4500,null=True)
     case_save =models.CharField(verbose_name='用例保存参数',max_length=1000,null=True)
     case_postpostposition = models.CharField(verbose_name='后置处理', max_length=4500,null=True)
-    case_careatetime=models.DateTimeField(verbose_name='创建时间')
+    case_createtime=models.DateTimeField(verbose_name='创建时间')
     case_status =models.CharField(verbose_name='用例状态', max_length=4, choices=(('1', '启用'),('2', '删除')), default='1')
     modular =models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=Modular)
 

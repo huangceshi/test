@@ -2,6 +2,7 @@ from rest_framework import viewsets,status
 from rest_framework.response import Response
 import django_filters
 
+from rest_framework.pagination import PageNumberPagination
 
 
 class Baseview(viewsets.ModelViewSet):
@@ -16,8 +17,8 @@ class Baseview(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
 
         # 重写数据返回格式
-        data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
-
+        data = {'status_code': status.HTTP_201_CREATED, 'data': serializer.data}
+        # return Response(data)
         return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
     #修改
     def update(self, request, *args, **kwargs):

@@ -43,6 +43,20 @@ class ModulerViewSet(Baseview):
             modulerlist.append(valuelist)
         return Response(data={'code': status.HTTP_200_OK,  'data': modulerlist})
 
+    @action(methods=['post'], detail=False)
+    def one(self, request):
+        received_json_data = json.loads(request.body)
+        modeller_id = received_json_data['id']
+        modularname = models.Modular.objects.filter(id=modeller_id)
+        modularname = serializer.ModulerSerializer(modularname, many=True).data
+        prename =  json.loads(json.dumps(modularname))
+        prename = prename[0]['platform']
+        data = models.Modular.objects.filter(platform=prename)
+
+        data = serializer.ModulerSerializer(data, many=True).data
+        data = json.loads(json.dumps(data))[0]
+
+        return Response(data={'code': status.HTTP_200_OK, 'data': data})
 class UserViewSet(Baseview):
     queryset = models.User.objects.all()
     serializer_class = serializer.UserSerializer
