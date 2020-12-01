@@ -102,7 +102,7 @@ export default {
       }).then(() => {
         this.$message({
           type: "success",
-          message: "运行成功!"
+          message: "运行完成，请查看测试报告"
         });
       });
     },
@@ -117,7 +117,7 @@ export default {
       }).then(() => {
         this.$message({
           type: "success",
-          message: "运行成功!"
+          message: "运行完成，请查看测试报告!"
         });
       });
     },

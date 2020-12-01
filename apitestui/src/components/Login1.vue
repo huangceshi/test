@@ -67,7 +67,7 @@ export default {
                 const { id, username } = res.data.posts[0];
                 window.localStorage.setItem("uid", id);
                 window.localStorage.setItem("name", username);
-                this.$router.push("/home");
+                this.$router.push("/home/main");
               } else {
                 this.$message({
                   message: "登录失败",

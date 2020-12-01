@@ -71,7 +71,7 @@ export default {
               const { id, username } = res.data;
               window.localStorage.setItem("uid", id);
               window.localStorage.setItem("name", username);
-              this.$router.push("/home");
+              this.$router.push("/home/main");
             })
             .catch(err => {
               this.$message({
