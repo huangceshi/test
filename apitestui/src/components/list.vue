@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <div class="project-top">
       <el-button
         type="primary"
@@ -60,7 +61,7 @@
 
 <script>
 import dayjs from "dayjs";
-
+import { MessageBox } from 'element-ui';
 export default {
   data() {
     return {
@@ -130,11 +131,39 @@ export default {
         user: localStorage.getItem("uid")
       }).then(res => {
         const resStr = res.data[0].runsave[0].replace(/'/g, '"');
-        this.$alert(JSON.stringify(JSON.parse(resStr), null, 2), "运行结果", {
-          confirmButtonText: "确定"
+        this.$confirm(resStr, '接口返回结果', {
+          confirmButtonText: '关闭',
+          customClass:'msgBox',
+          // cancelButtonText: '复制',
+          type: 'warning'
+        // }).catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已复制'
+        //   });
         });
       });
     },
+    // runOne(item) {
+    //   this.$post(`/api/run/`, {
+    //     createtime: dayjs().format(),
+    //     run_url: "1",
+    //     api_id: item.id,
+    //     modular: this.id,
+    //     user: localStorage.getItem("uid")
+    //   }).then(res => {
+    //     const resStr = res.data[0].runsave[0].replace(/'/g, '"');
+    //     this.$alert('<div  style="width: 100%;height: 80%;"><div style="border: 1px solid red;"></div></div>',resStr,{
+    //       customClass:'msgBox',
+    //       dangerouslyUseHTMLString:true,
+    //       showCancelButton:false,
+    //       showConfirmButton:true,
+    //       cancelButtonText:"关闭",
+    //       roundButton:true,
+    //
+    //     });
+    //   });
+    // },
     sizeChange(size) {
       this.pageSize = size;
       this.change(this.currentPage);
@@ -196,6 +225,13 @@ export default {
 </script>
 
 <style>
+
+.msgBox {
+  max-height: 550px;
+  overflow-y: auto;
+  width: 60%;
+  height: 60%;
+}
 .project-top {
   margin-top: 30px;
 }

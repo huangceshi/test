@@ -7,6 +7,7 @@ import store from "./store";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import axios from "axios";
+// import  Alert from "./components/Alert";
 import { get, post, del, put, patch } from "./util/http";
 Vue.prototype.$http = axios;
 
@@ -18,7 +19,7 @@ Vue.prototype.$patch = patch;
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
-
+// Vue.use(Alert)
 new Vue({
   el: "#app",
   router,
