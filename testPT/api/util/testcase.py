@@ -33,11 +33,7 @@ class Tesstcase():
         #之前之前，前置处理
         print(f'{self.testcase}开始请求前参数转化')
         #data 参数json化,如果是文件上传则不进行这个替换
-        if self.data =='null':
-            pass
-        else:
-            self.data = self.data.replace("'", "\"")
-            self.data = json.loads(self.data)
+
 
 
         # replace 参数json化，替换参数进行json化
@@ -47,20 +43,8 @@ class Tesstcase():
         #     self.replace = self.replace.replace("'", "\"")
         #     self.replace = json.loads(self.replace)
 
-        # save 参数json化  保存字段数据，进行json化
-        # if self.save == []:
-        #     pass
-        # else:
-        #     for i in self.save:
-        #     self.save = self.save.replace("'", "\"")
-        #     self.save = json.loads(self.save)
-
-        # check 参数json化 检查字段进行json参数化
-        # if self.check == 'null':
-        #     pass
-        # else:
-        #     self.check = self.check.replace("'", "\"")
-        #     self.check = json.loads(self.check)
+        #请求提参数json化
+        self.data = json.loads(self.data)
 
         #替换header
         if self.type =='GET':
@@ -68,7 +52,6 @@ class Tesstcase():
         else:
             if self.file_name =='null':
                 self.header = {'Content-Type': 'application/json;charset=UTF-8'}
-
             else:
                 #如果是文件上传，则替换文件上传请求的header
                 self.header = {'Content-Disposition': 'form-data', 'Accept-Encoding': 'gzip',
@@ -78,6 +61,25 @@ class Tesstcase():
                 file_address =file_address.replace("1", self.file_name)
                 file_address =json.loads(file_address)
                 self.file_name =file_address
+
+        if self.replace == '[]':
+            pass
+        else:
+            self.replace = json.loads(self.replace)
+            for i in self.replace:
+                key = i['key']
+                value = i['value']
+                if key == 'token':
+                    value = models.Cursor.objects.filter(run_id=self.runid, usr_key=value)
+                    value = serializer.CursorSerializer(value, many=True).data
+                    value = jsonpath.jsonpath(value, '$..user_value')[0]
+                    self.header['token']=value
+                    pass
+                else:
+                    value = models.Cursor.objects.filter(run_id=self.runid, usr_key=value)
+                    value = serializer.CursorSerializer(value, many=True).data
+                    value = jsonpath.jsonpath(value, '$..user_value')[0]
+                    self.data[key]=value
 
 
 
