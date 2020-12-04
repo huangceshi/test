@@ -8,6 +8,9 @@ import Config from "../components/Config";
 import List from "../components/list";
 import Add from "../components/add";
 import Edit from "../components/edit";
+import tests from "../components/tests";
+
+
 
 Vue.use(Router);
 
@@ -34,9 +37,14 @@ const router = new Router({
       component: Home,
       children: [
         {
-          path: "Config",
+          path: "config",
           name: "Config",
           component: Config
+        },
+         {
+          path: "tests",
+          name: "tests",
+          component: tests
         },
         {
           path: "main",

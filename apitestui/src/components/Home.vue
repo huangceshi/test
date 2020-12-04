@@ -45,7 +45,8 @@
                 <span>环境配置</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/home/Config">环境设置</el-menu-item>
+                <el-menu-item index="/home/config">环境设置</el-menu-item>
+                <el-menu-item index="/home/tests">环境设置</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 

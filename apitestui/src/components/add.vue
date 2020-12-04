@@ -66,7 +66,7 @@
             <div>期望值</div>
           </el-col>
           <el-col :span="6">
-            <el-button @click="addCheck">添加</el-button></el-button>
+            <el-button @click="addCheck">添加</el-button>
           </el-col>
         </el-row>
 
