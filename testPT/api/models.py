@@ -43,7 +43,7 @@ class Api(models.Model):
     case_save =models.CharField(verbose_name='用例保存参数',max_length=1000,null=True)
     case_postpostposition = models.CharField(verbose_name='后置处理', max_length=4500,null=True)
     case_createtime=models.DateTimeField(verbose_name='创建时间')
-    case_status =models.CharField(verbose_name='用例状态', max_length=4, choices=(('1', '启用'),('2', '删除')), default='1')
+    case_status =models.CharField(verbose_name='用例状态', max_length=4, choices=(('1', '不加密'),('2', '加密')), default='1')
     modular =models.ForeignKey(verbose_name='用户执行id', on_delete=models.CASCADE, to=Modular)
 
 class   Run(models.Model):
