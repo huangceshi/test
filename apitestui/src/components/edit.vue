@@ -45,7 +45,7 @@
             <el-col :span="8">
               <el-input v-model="replace.value"></el-input>
             </el-col>
-            <el-col :span="8">        
+            <el-col :span="8">
               <el-button @click="deleteCaseReplace(index)">删除</el-button>
             </el-col>
           </el-row>
@@ -56,25 +56,25 @@
       <el-form-item label="校验参数" prop="name">
         <el-row></el-row>
         <el-row :gutter="20">
-          <el-col :span="6" >        
+          <el-col :span="6" >
             <div>参数路径</div>
           </el-col>
-          <el-col :span="6">        
+          <el-col :span="6">
              <div>校验方式</div>
           </el-col>
-          <el-col :span="6" >        
+          <el-col :span="6" >
             <div>期望值</div>
           </el-col>
-          <el-col :span="6">        
-            <el-button @click="addCheck">添加</el-button></el-button>
+          <el-col :span="6">
+            <el-button @click="addCheck">添加</el-button>
           </el-col>
         </el-row>
 
         <el-row :gutter="20" v-for="(check, index) in form.case_check">
-          <el-col :span="6" >        
+          <el-col :span="6" >
             <el-input placeholder="" v-model="check.key"></el-input>
           </el-col>
-          <el-col :span="6">        
+          <el-col :span="6">
             <el-select v-model="check.type" placeholder="请选择校验方式">
               <el-option label="等于" value="check1"></el-option>
               <el-option label="小于" value="check2"></el-option>
@@ -82,30 +82,30 @@
               <el-option label="字段长度" value="check4"></el-option>
             </el-select>
           </el-col>
-          <el-col :span="6" >        
+          <el-col :span="6" >
             <el-input placeholder="" v-model="check.value"></el-input>
           </el-col>
-          <el-col :span="6">        
-            <el-button @click="deleteCheck">删除</el-button></el-button>
+          <el-col :span="6">
+            <el-button @click="deleteCheck">删除</el-button>
           </el-col>
         </el-row>
       </el-form-item>
       <el-form-item label="保存参数" prop="name">
         <el-row></el-row>
         <el-row :gutter="20">
-          <el-col :span="12" >        
+          <el-col :span="12" >
             <div>参数名</div>
           </el-col>
-          <el-col :span="6" >        
+          <el-col :span="6" >
             <el-button @click="addSave">添加</el-button>
           </el-col>
         </el-row>
         <el-row :gutter="20" v-for="(save, index) in form.case_save">
-          <el-col :span="12" >        
+          <el-col :span="12" >
             <el-input placeholder="" v-model="save.key"></el-input>
           </el-col>
-          <el-col :span="6">        
-            <el-button @click="deleteSave(index)">删除</el-button></el-button>
+          <el-col :span="6">
+            <el-button @click="deleteSave(index)">删除</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -129,7 +129,7 @@
             <el-col :span="8">
               <el-input v-model="replace.value"></el-input>
             </el-col>
-            <el-col :span="8">        
+            <el-col :span="8">
               <el-button @click="deletePosition(index)">删除</el-button>
             </el-col>
           </el-row>
@@ -231,7 +231,7 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          const { 
+          const {
             casename,
             case_type,
             case_url,

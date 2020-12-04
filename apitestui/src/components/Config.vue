@@ -14,7 +14,7 @@
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button @click="cancel">取 消</el-button>
               <el-button type="primary" @click="add('form')">确 定</el-button>
             </div>
           </el-dialog>
@@ -28,21 +28,36 @@
       <el-table-column label="配置项" prop="value" ></el-table-column>
       <el-table-column fixed="right" label="操作" width="150">
         <template fixed="right" slot-scope="scope">
-          <el-button @click="editItem(scope.row)" type="text" size="small"
-            >编辑</el-button
-          >
+          <el-button @click="editbuttun(scope.row)"  type="text" size="small"
+            >编辑</el-button>
           <el-button @click="deleteItem(scope.$index,scope.row,tableData)" type="text" size="small"
-            >删除</el-button
-          >
+            >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div>
+      <el-dialog title="请修改配置信息" :visible.sync="dialogFormVisibleedit">
+            <el-form :model="formedit" ref="formedit" :rules="rules">
+              <el-form-item label="配置名称" prop="key"  :label-width="formLabelWidth">
+                <el-input v-model="formedit.key"  autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="配置值" prop="value" :label-width="formLabelWidth">
+                <el-input v-model="formedit.value"  autocomplete="off"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="canceledit">取 消</el-button>
+              <el-button type="primary" @click="addedit(formedit)">确 定</el-button>
+            </div>
+          </el-dialog>
+    </div>
 
   </div>
 </template>
 
 <script>
 import dayjs from "dayjs";
+import {put} from "../util/http";
 
 export default {
   data() {
@@ -51,10 +66,16 @@ export default {
       tableData: [],
       list: [],
       dialogFormVisible: false,
+      dialogFormVisibleedit: false,
       form: {
           key: '',
           value: '',
         },
+      formedit: {
+        id:'',
+        key: '',
+        value: '',
+      },
       formLabelWidth: '120px',
       rules: {
         key: [{ required: true, message: "不能为空", trigger: "blur" }],
@@ -73,6 +94,43 @@ export default {
           this.tableData = res.data.posts
         })
     },
+    editbuttun(row){
+      this.dialogFormVisibleedit = true;
+      this.formedit = row
+      alert(formedit.id)
+    },
+    canceledit(){
+      this.dialogFormVisibleedit = false;
+      this.formedit={brand_right:0}
+    },
+    addedit(item) {
+      this.dialogFormVisibleedit = false;
+      this.$refs["formedit"].validate(valid => {
+        if (valid) {
+          this.$put(`/api/config/${item.id}/`, this.formedit)
+            .then(res => {
+              if(res.status_code === 200){
+                this.formedit={brand_right:0}
+                this.$message({
+                message: '修改成功',
+                type: "success"
+              });
+              }
+              this.$router.push("/home/config")
+            })
+            .catch(err => {
+              this.$message({
+                message: err,
+                type: "error"
+              });
+            });
+        }
+      });
+    },
+    cancel(){
+      this.dialogFormVisible = false;
+      this.form={brand_right:0}
+    },
     add(form) {
       this.dialogFormVisible = false;
       this.$refs["form"].validate(valid => {
@@ -82,6 +140,7 @@ export default {
               if(res.status_code === 200){
                 let newValue = res.data
                 this.tableData.push(newValue);
+                this.form={brand_right:0}
                 // this.$router.go(0)
                 this.$message({
                 message: '创建成功',
