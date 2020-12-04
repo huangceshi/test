@@ -36,7 +36,6 @@
               </template>
               <el-menu-item-group>
                 <el-menu-item index="/home/main">链路化接口测试</el-menu-item>
-                <el-menu-item index="/home/project/">单个接口测试</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 
@@ -46,8 +45,7 @@
                 <span>环境配置</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="">环境设置</el-menu-item>
-                <el-menu-item index="">其他设置</el-menu-item>
+                <el-menu-item index="/home/Config">环境设置</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 

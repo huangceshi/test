@@ -4,7 +4,7 @@ import Login1 from "../components/Login1";
 import Regediter from "../components/Regediter";
 import Home from "../components/Home";
 import Main from "../components/Main";
-import Project from "../components/Project";
+import Config from "../components/Config";
 import List from "../components/list";
 import Add from "../components/add";
 import Edit from "../components/edit";
@@ -34,9 +34,9 @@ const router = new Router({
       component: Home,
       children: [
         {
-          path: "project",
-          name: "Project",
-          component: Project
+          path: "Config",
+          name: "Config",
+          component: Config
         },
         {
           path: "main",

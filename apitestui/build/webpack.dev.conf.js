@@ -37,7 +37,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
     compress: true,
-    host: "192.168.7.135",
+    host: "192.168.43.156",
     port: PORT || config.dev.port,
     open: config.dev.autoOpenBrowser,
     overlay: config.dev.errorOverlay
@@ -46,7 +46,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     publicPath: config.dev.assetsPublicPath,
     proxy: {
       "/api": {
-        target: "http://192.168.7.135:8000/",
+        target: "http://192.168.43.156:8000/",
         ws: true,
         changeOrigin: true
       }

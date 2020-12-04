@@ -69,7 +69,7 @@ export default {
       this.$store.dispatch("fetchMenu");
     },
     addItem(item) {
-      this.$prompt("请输入项目名称", `${item.platformname} 添加子项目`, {
+      this.$prompt("请输入模块名称", `${item.platformname} 添加模块`, {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {
@@ -133,9 +133,6 @@ export default {
         });
       });
     },
-    // open(index) {
-    //   this.selectMenu(this.data[index - 1].id);
-    // },
     selectMenu(id) {
       this.$router.push(`/home/main/list/${id}`);
     }
