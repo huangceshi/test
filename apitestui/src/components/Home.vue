@@ -8,8 +8,7 @@
           <span style="float: right">管理员: {{ username }}</span>
           <el-dropdown
             style="float: right;margin-right: 15px"
-            @command="loginOut"
-          >
+            @command="loginOut">
             <i class="el-icon-setting"></i>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="a">退出</el-dropdown-item>
@@ -27,8 +26,7 @@
             text-color="#6E6E6E"
             active-text-color="#409EFF"
             style="border-right: none"
-            :default-openeds="['1']"
-          >
+            >
             <el-submenu index="1">
               <template slot="title">
                 <i class="iconfont icon-accountbook"></i>
@@ -82,7 +80,7 @@
 
 <script>
 import "../assets/icon/iconfont.css";
-// import {delCookie} from "../util/util";
+
 export default {
   data() {
     const username = window.localStorage.getItem("name") || "";
