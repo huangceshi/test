@@ -1,4 +1,3 @@
-
 from api.util.http import Http
 import json
 from api import models
@@ -32,18 +31,8 @@ class Tesstcase():
     def front(self):
         #之前之前，前置处理
         print(f'{self.testcase}开始请求前参数转化')
-        #data 参数json化,如果是文件上传则不进行这个替换
 
-
-
-        # replace 参数json化，替换参数进行json化
-        # if self.replace ==[]:
-        #     pass
-        # else:
-        #     self.replace = self.replace.replace("'", "\"")
-        #     self.replace = json.loads(self.replace)
-
-        #请求提参数json化
+        #data
         self.data = json.loads(self.data)
 
         #替换header
@@ -65,40 +54,25 @@ class Tesstcase():
         if self.replace == '[]':
             pass
         else:
-            self.replace = json.loads(self.replace)
-            for i in self.replace:
-                key = i['key']
-                value = i['value']
-                if key == 'token':
-                    value = models.Cursor.objects.filter(run_id=self.runid, usr_key=value)
-                    value = serializer.CursorSerializer(value, many=True).data
-                    value = jsonpath.jsonpath(value, '$..user_value')[0]
-                    self.header['token']=value
-                    pass
-                else:
-                    value = models.Cursor.objects.filter(run_id=self.runid, usr_key=value)
-                    value = serializer.CursorSerializer(value, many=True).data
-                    value = jsonpath.jsonpath(value, '$..user_value')[0]
-                    self.data[key]=value
+            try:
+                self.replace = json.loads(self.replace)
+                for i in self.replace:
+                    key = i['key']
+                    value = i['value']
+                    if key == 'token':
+                        value = models.Cursor.objects.filter(run_id=self.runid, usr_key=value)
+                        value = serializer.CursorSerializer(value, many=True).data
+                        value = jsonpath.jsonpath(value, '$..user_value')[0]
+                        self.header['token']=value
+                        pass
+                    else:
+                        value = models.Cursor.objects.filter(run_id=self.runid, usr_key=value)
+                        value = serializer.CursorSerializer(value, many=True).data
+                        value = jsonpath.jsonpath(value, '$..user_value')[0]
+                        self.data[key]=value
+            except:
+                util.Util.dberror(self.testcase)
 
-
-
-        # if self.replace ==[]:
-        #     pass
-        # else:
-        #     for k in self.replace.keys():
-        #         #替换token，需要存在token
-        #         if k == 'token':
-        #             key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
-        #             value = serializer.CursorSerializer(key, many=True).data
-        #             value = jsonpath.jsonpath(value, '$..user_value')[0]
-        #             self.header['token']=value
-        #         else:
-        #             key = models.Cursor.objects.filter(run_id=self.runid, usr_key=k)
-        #             value = serializer.CursorSerializer(key, many=True).data
-        #             value = jsonpath.jsonpath(value, '$..user_value')[0]
-        #             self.data[k]=value
-        # print('请求前参数替换完成')
         Tesstcase.completeurl(self)
     #补全ulr
     def completeurl(self):
@@ -117,14 +91,17 @@ class Tesstcase():
         client = Http(method=self.type, url=self.url, data=self.data,file_name=self.file_name,file_data=self.file_data,header=self.header,name=self.testname,save=self.save,testcase=self.testcase,runid=self.runid )
         result =client.send()
         #如果接口请求错误，则报错
-
-        if json.loads(result.text)['code'] != 10000:
+        try:
+            if json.loads(result.text)['code'] != 10000:
+                util.Util.dberror(self.testcase)
+                print(json.loads(result.text)['msg'])
+                return result
+            client.issave(self.save, result.text)
+            client.checklist(self.check, result, self.testcase)
+            client.processing(self.postpostposition)
+        except:
             util.Util.dberror(self.testcase)
-            print(json.loads(result.text)['msg'])
-            return result
-        client.issave(self.save,result.text)
-        client.checklist(self.check,result,self.testcase)
-        client.processing(self.postpostposition)
+
 
         #判断如果是单接口运行，则存储测试结果，方便返回调用显示
         if self.apiid != 'null':

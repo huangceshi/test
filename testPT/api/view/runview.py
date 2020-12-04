@@ -16,12 +16,8 @@ class Runview(viewsets.ModelViewSet):
         # 重写数据返回格式
         data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
 
-        # try:
-        #     return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)
-        # finally:
-        #     Util.ApiSelect(data)
-
-        Util.ApiSelect(data)
+        returndata = Util.ApiSelect(data)
+        Util.nowrun(returndata['key'])
         requestdata = Util.getrequest(data)
         data = {'status_code': status.HTTP_200_OK, 'data': requestdata}
         return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)

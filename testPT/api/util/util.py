@@ -14,6 +14,7 @@ from api.util.zipfile import zip_file
 import  shutil
 
 class Util():
+    #获取用例执行的list
     def ApiSelect(data):
         TestOrder.error=[]
         TestOrder.rundata={}
@@ -23,7 +24,8 @@ class Util():
         id = jsonpath.jsonpath(data, '$..id')[0]
         userid = jsonpath.jsonpath(data, '$..user')[0]
         TestOrder.rundata['runid']=id
-
+        returndata ={}
+        returndata['key']=userid
         #判断如果apiid不为null，则运行指定apiid的用例
         if apiid !='null':
             # runsave={}
@@ -118,9 +120,11 @@ class Util():
                 print(f'本次测试用例集合为：{alllists}\n')
                 print(f'本次测试用例数量位：{len(alllists)}\n')
 
+        return returndata
 
 
-        #开始进行测试
+        #开始执行测试，
+    def nowrun(runid):
 
         repotrname = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
         address = os.getcwd()
@@ -129,11 +133,11 @@ class Util():
         report_path = address+'/api/report.zip'
         file_names = report_path
         #防止上次执行错误，没有删除文件，所以删除测试报告
-        # try:
-        #     shutil.rmtree(file_names)
-        #     shutil.rmtree(report_path_del)
-        # except:
-        #     pass
+        try:
+            os.remove(file_names)
+            shutil.rmtree(report_path_del)
+        except:
+            pass
 
 
 
@@ -146,7 +150,7 @@ class Util():
         zip_file(report_path1, report_path2, 'report.zip', repotrname)
 
         #进行邮件发送通知
-        key =models.User.objects.filter(id=userid)
+        key =models.User.objects.filter(id=runid)
         key = serializer.UserSerializer(key, many=True).data
         key = json.loads(json.dumps(key))
         mail_body = len(TestOrder.error)
@@ -208,10 +212,10 @@ class Util():
     # def check_reponse_total(vulue,result):
     #     assert result.status_code < vulue[3:] ,"接口相应时间超过"+k[3:]
 
-    # 数据库执行，进行结果添加
+    # 运行错误执行，进行结果添加
     def dberror(testcase):
         TestOrder.error.append(testcase)
-        
+
 
     #获取单个用例结果
     def getrequest(data):
