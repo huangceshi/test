@@ -21,6 +21,7 @@ class Tesstcase():
         self.file_data = case['case_file_data']
         self.check = case['case_check']
         self.save = case['case_save']
+        self.status = case['case_status']
         self.postpostposition = case['case_postpostposition']
         self.runid=id
         self.apiid = apiid
@@ -72,6 +73,17 @@ class Tesstcase():
                         self.data[key]=value
             except:
                 util.Util.dberror(self.testcase)
+
+        #进行参数加密
+
+        if self.status == '1':
+            pass
+        else:
+            for i in self.data.keys():
+                # 请求值加密
+                value = util.Util.encryption(self.data[i])
+                self.data[i] = value
+
 
         Tesstcase.completeurl(self)
     #补全ulr

@@ -217,6 +217,11 @@ class Util():
         TestOrder.error.append(testcase)
 
 
+    def encryption(value):
+        #进行加密返回加密值
+        return value
+
+
     #获取单个用例结果
     def getrequest(data):
         id = jsonpath.jsonpath(data, '$..id')[0]
