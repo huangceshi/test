@@ -25,6 +25,14 @@
           <el-option label="put" value="put"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="是否加密" prop="case_status">
+        <template>
+          <el-radio v-model="form.case_status" label="1">不加密</el-radio>
+          <el-radio v-model="form.case_status" label="2">加密</el-radio>
+        </template>
+      </el-form-item>
+
+
       <el-form-item label="请求参数" prop="case_data">
         <el-input type="textarea" v-model="form.case_data" @blur='handleInput'></el-input>
         <el-row :gutter="20">
@@ -86,7 +94,7 @@
             <el-input placeholder="" v-model="check.value"></el-input>
           </el-col>
           <el-col :span="6">
-            <el-button @click="deleteCheck">删除</el-button></el-button>
+            <el-button @click="deleteCheck">删除</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -105,7 +113,7 @@
             <el-input placeholder="" v-model="save.key"></el-input>
           </el-col>
           <el-col :span="6">
-            <el-button @click="deleteSave(index)">删除</el-button></el-button>
+            <el-button @click="deleteSave(index)">删除</el-button>
           </el-col>
         </el-row>
       </el-form-item>
@@ -172,6 +180,7 @@ export default {
       form: {
         casename: "",
         case_type: "POST",
+        case_status: '1',
         case_url: "",
         case_data: "",
         case_replace: [],
@@ -212,6 +221,7 @@ export default {
           const {
             casename,
             case_type,
+            case_status,
             case_url,
             case_data,
             case_replace,
@@ -224,6 +234,7 @@ export default {
           this.$post(`/api/api/`, {
             casename,
             case_type,
+            case_status,
             case_url,
             case_data,
             case_replace: JSON.stringify(case_replace),

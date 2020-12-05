@@ -25,6 +25,12 @@
           <el-option label="PUT" value="PUT"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="是否加密" prop="case_status">
+        <template>
+          <el-radio v-model="form.case_status" label="1">不加密</el-radio>
+          <el-radio v-model="form.case_status" label="2">加密</el-radio>
+        </template>
+      </el-form-item>
       <el-form-item label="请求参数" prop="case_data">
         <el-input type="textarea" v-model="form.case_data" @blur='handleInput'></el-input>
         <el-row :gutter="20">
@@ -176,6 +182,7 @@ export default {
         case_type: "",
         case_url: "",
         case_data: "",
+        case_status:'',
         case_replace: [],
         case_file_name: "",
         case_check: [],
@@ -234,6 +241,7 @@ export default {
           const {
             casename,
             case_type,
+            case_status,
             case_url,
             case_data,
             case_replace,
@@ -246,6 +254,7 @@ export default {
           this.$put(`/api/api/${this.id}/`, {
             casename,
             case_type,
+            case_status,
             case_url,
             case_data,
             case_replace: JSON.stringify(case_replace),

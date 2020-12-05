@@ -16,18 +16,18 @@
           <template slot="title">
             <i class="el-icon-location"></i>
             <span>{{ item.platformname }}</span>
-            <i class="el-icon-plus" @click.stop="addItem(item)"></i>
+            <i class="el-icon-plus" @click.stop="addItem(item)" style="padding: 12px 0px 12px 0px;"></i>
           </template>
           <el-menu-item-group>
             <el-menu-item
               v-for="subItem in item.lists"
               :key="subItem.id"
-              :index="String(subItem.id)"
-            >
+              :index="String(subItem.id)">
+<!--              -->
               <el-row>
-                <el-col :span="12">{{ subItem.moduless }}</el-col>
+                <el-col :span="12" >{{ subItem.moduless }}</el-col>
                 <el-col :span="12">
-                  <i class="el-icon-edit" @click.stop="editItem(subItem)"></i>
+                  <i class="el-icon-edit" @click.stop="editItem(subItem)" style="padding: 12px 0px 12px 0px;margin-left: 70px;"></i>
                   <i
                     class="el-icon-delete"
                     style="color:red;"
