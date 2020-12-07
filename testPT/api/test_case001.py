@@ -10,6 +10,8 @@ class TestOrder(Myunittest):
 
     # @pytest.mark.order
     def test_001(self):
+        print(1111111111)
+        # print(addopts)
         runid = TestOrder.rundata['runid']
         rundata = TestOrder.rundata['lists']
         apiid = TestOrder.rundata['runsave']

@@ -12,6 +12,8 @@ import os
 from api.test_case001 import TestOrder
 from api.util.zipfile import zip_file
 import  shutil
+from pyDes import des, PAD_PKCS5, ECB
+import base64
 
 class Util():
     #获取用例执行的list
@@ -142,6 +144,8 @@ class Util():
 
 
         pytest.main(['-k','test_001',f'--html=./api/report/{repotrname}.html'])
+        # pytest.main([ f'--html=./api/report/{repotrname}.html'])
+
         # pytest.main(['-k', '-m','order','--arruredir=./api/report/allure'])
 
         #进行测试报告压缩
@@ -217,9 +221,12 @@ class Util():
         TestOrder.error.append(testcase)
 
 
-    def encryption(value):
-        #进行加密返回加密值
-        return value
+
+    def encryption(s):
+        Des_Key = b"0d900510"
+        k = des(Des_Key, ECB, pad=None, padmode=PAD_PKCS5)
+        encrystr = k.encrypt(s)
+        return base64.b64encode(encrystr).decode('utf8')
 
 
     #获取单个用例结果

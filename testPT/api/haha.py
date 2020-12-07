@@ -247,15 +247,15 @@ import allure
 
 
 
-a ={'key1':'value1','key2':'value2','key3':'value3'}
-print(len(a))
-print(a.keys())
-# for i in a:
-#     print(a)
-for i in a.keys():
-    #请求值加密
-    value = encryption(a[i])
-    a[i]=value
+# a ={'key1':'value1','key2':'value2','key3':'value3'}
+# print(len(a))
+# print(a.keys())
+# # for i in a:
+# #     print(a)
+# for i in a.keys():
+#     #请求值加密
+#     value = encryption(a[i])
+#     a[i]=value
 
 
 
@@ -276,8 +276,8 @@ for i in a.keys():
 # a = 'crmadmin'
 # b =
 
-# from pyDes import des, CBC, PAD_PKCS5
-# import binascii
+from pyDes import des, CBC, PAD_PKCS5
+import binascii
 
 # 秘钥
 
@@ -321,7 +321,7 @@ for i in a.keys():
 #
 # python ： bytearray(passwd)
 # import base64
-# from pyDes import des, PAD_PKCS5, ECB
+from pyDes import des, PAD_PKCS5, ECB
 # 想将字符串转编码成base64,要先将字符串转换成二进制数据
 # url = "crmadmin"
 # bytes_url = url.encode("utf-8")
@@ -353,3 +353,66 @@ for i in a.keys():
 # # data = des.decrypt(encrypto_text).decode('utf-8')
 # print('明文',data)
 
+
+
+
+# userName ='crmadmin'
+# key = '0d9005104cac49f693da6e6d46914f94'
+# iv ='0d9005104cac49f6'
+# # 加密后
+
+# key = bytes(key,encoding="utF-8")
+# userName = bytes(userName,encoding="utF-8")
+# iv = bytes(iv,encoding="utF-8")
+# print(key)
+# print(userName)
+#
+# k =des(key,CBC,iv,pad=None,padmode=PAD_PKCS5)
+# en =K.encrypt(userName,padmode=PAD_PKCS5)
+# print(en)
+
+
+import base64
+import pyDes
+
+from pyDes import des, PAD_PKCS5, ECB
+
+class PyDES3():
+    def __init__(self, key):
+        """
+        三重DES加密、对称加密。py2下不可用
+        :param key: 密钥
+        """
+        self.cryptor = pyDes.triple_des(key, padmode=pyDes.PAD_PKCS5)
+
+    def encrypt(self, text):
+        """
+        加密
+        :param text:
+        :return:
+        """
+        x = self.cryptor.encrypt(text.encode())
+        return base64.standard_b64encode(x).decode()
+
+    def decrypt(self, text):
+        """
+        解密
+        :param text:
+        :return:
+        """
+        x = base64.standard_b64decode(text.encode())
+        x = self.cryptor.decrypt(x)
+        return x.decode()
+
+if __name__ == '__main__':
+    key = '0d9005104cac49f693da6e6d' # 此Key需与前端一致
+    text = 'crmadmin'
+    # key = key.encode()
+    # text=text.encode()
+
+    des = PyDES3(key)
+    print(des.encrypt(text))
+    print(des.decrypt('WJ2tod/VMtdwffjX+ykjPA=='))
+
+
+# # userName= "WJ2tod/VMtdwffjX+ykjPA=="
