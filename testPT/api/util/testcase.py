@@ -25,8 +25,7 @@ class Tesstcase():
         self.postpostposition = case['case_postpostposition']
         self.runid=id
         self.apiid = apiid
-        print(f'初始化测试用例id：{self.testcase}，测试昵称{self.testname},请求方式：{self.type},请求地址：{self.url},请求值{self.data},上传文件名称{self.file_name},文件上传参数：{self.file_data}'
-              f',请求之前替换参数：{self.replace}，校验内容：{self.check}，保存参数：{self.save}，数据库操作参数：{self.postpostposition}')
+
 
     #参数替换
     def front(self):
@@ -72,7 +71,8 @@ class Tesstcase():
                         value = jsonpath.jsonpath(value, '$..user_value')[0]
                         self.data[key]=value
             except:
-                util.Util.dberror(self.testcase)
+                # util.Util.dberror(self.testcase)
+                util.Util.errorlist(self.runid, self.testcase)
 
         #进行参数加密
 
@@ -100,19 +100,23 @@ class Tesstcase():
         # -------------------------------------执行测试用例---------------------------------------
         print("============开始执行用例："+str(self.testname)+"=============")
         # #
+        print(f'测试用例id：{self.testcase}，测试昵称{self.testname},请求方式：{self.type},请求地址：{self.url},请求值{self.data},上传文件名称{self.file_name},文件上传参数：{self.file_data}'
+            f',请求之前替换参数：{self.replace}，校验内容：{self.check}，保存参数：{self.save}，数据库操作参数：{self.postpostposition}')
         client = Http(method=self.type, url=self.url, data=self.data,file_name=self.file_name,file_data=self.file_data,header=self.header,name=self.testname,save=self.save,testcase=self.testcase,runid=self.runid )
         result =client.send()
         #如果接口请求错误，则报错
         try:
             if json.loads(result.text)['code'] != 10000:
-                util.Util.dberror(self.testcase)
+                util.Util.errorlist(self.runid, self.testcase)
+                # util.Util.dberror(self.testcase)
                 print(json.loads(result.text)['msg'])
                 return result
             client.issave(self.save, result.text)
             client.checklist(self.check, result, self.testcase)
             client.processing(self.postpostposition)
         except:
-            util.Util.dberror(self.testcase)
+            # util.Util.dberror(self.testcase)
+            util.Util.errorlist(self.runid,self.testcase)
 
 
         #判断如果是单接口运行，则存储测试结果，方便返回调用显示

@@ -11,9 +11,6 @@ class DB():
         result = 0
         print(f'{name}:接口开始数据库语句执行')
         postpostposition = json.loads(postpostposition)
-        print(2222)
-        print(postpostposition)
-        print(type(postpostposition))
         for i in postpostposition:
 
             dbname= i['key']

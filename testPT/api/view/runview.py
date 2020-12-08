@@ -2,7 +2,7 @@ from rest_framework import viewsets,status
 from rest_framework.response import Response
 import django_filters
 from api.util.util import Util
-
+import jsonpath
 class Runview(viewsets.ModelViewSet):
 
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -17,7 +17,8 @@ class Runview(viewsets.ModelViewSet):
         data = {'status_code': status.HTTP_200_OK, 'data': serializer.data}
 
         returndata = Util.ApiSelect(data)
-        Util.nowrun(returndata['key'])
+        id = jsonpath.jsonpath(data, '$..id')[0]
+        Util.nowrun(returndata['key'],id)
         requestdata = Util.getrequest(data)
         data = {'status_code': status.HTTP_200_OK, 'data': requestdata}
         return Response(data=data, status=status.HTTP_201_CREATED, headers=headers)

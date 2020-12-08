@@ -126,8 +126,9 @@ class Util():
 
 
         #开始执行测试，
-    def nowrun(runid):
-
+    def nowrun(userid,runid):
+        print(333)
+        print(userid)
         repotrname = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
         address = os.getcwd()
         address = r"/".join(address.split("\\"))
@@ -154,12 +155,13 @@ class Util():
         zip_file(report_path1, report_path2, 'report.zip', repotrname)
 
         #进行邮件发送通知
-        key =models.User.objects.filter(id=runid)
+        key =models.User.objects.filter(id=userid)
         key = serializer.UserSerializer(key, many=True).data
         key = json.loads(json.dumps(key))
-        mail_body = len(TestOrder.error)
         receiver = key[0]['email']
 
+
+        mail_body = len(Util.checkerrorlist(runid))
         Util.sendEmail(mail_body, receiver, file_names)
 
         #删除测试报告和文件
@@ -191,8 +193,6 @@ class Util():
         msg['From'] = username
         msg['To'] = receiver
 
-        # 附件:附件名称用英文
-        # for file_name in file_names:
         att = MIMEText(open(file_names, 'rb').read(), 'base64', 'utf-8')
         att["Content-Type"] = 'application/octet-stream'
         att['Content-Disposition'] = 'attachment;filename="%s"' % (file_names)
@@ -213,14 +213,39 @@ class Util():
         finally:
             smtp.quit()
 
-    # def check_reponse_total(vulue,result):
-    #     assert result.status_code < vulue[3:] ,"接口相应时间超过"+k[3:]
 
     # 运行错误执行，进行结果添加
-    def dberror(testcase):
-        TestOrder.error.append(testcase)
+    # def dberror(testcase):
+    #     TestOrder.error.append(testcase)
+
+    def checkerrorlist(id):
+        key = models.Cursor.objects.filter(run_id=id, usr_key='error')
+        key = serializer.CursorSerializer(key, many=True).data
+        if key == []:
+            return []
+        else:
+            key = json.loads(json.dumps(key[0]))
+            lists = json.loads(key['user_value'])
+            return lists
 
 
+
+    def errorlist(id,testcase):
+        nowtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        key = models.Cursor.objects.filter(run_id=id, usr_key='error')
+        key = serializer.CursorSerializer(key, many=True).data
+        if key == []:
+            lists = []
+            lists.append(testcase)
+            models.Cursor.objects.create(usr_key='error', user_value=lists, createtime=nowtime,
+                                         api_id=testcase, run_id=id)
+        else:
+            key = json.loads(json.dumps(key[0]))
+            lists =key['user_value']
+            lists = json.loads(lists)
+            lists.append(testcase)
+            lists=str(lists)
+            models.Cursor.objects.filter(run_id=id).update(user_value=lists, createtime=nowtime)
 
     def encryption(s):
         Des_Key = b"0d900510"
@@ -236,11 +261,12 @@ class Util():
         data = serializer.RunSerializer(data, many=True).data
         return data
     #进行相等校验
-    def check_nodeText_equals(k,v,result,case):
+    def check_nodeText_equals(k,v,result,case,id):
         result = json.loads(result.text)
         try:
             value = jsonpath.jsonpath(result, k)[0]
         except Exception as e:
+            Util.errorlist(id, case)
             print(f'error用例验证点路径找不到,具体错误如下：{e}\n')
         if v.isdigit():
             route =int(v)
@@ -248,7 +274,8 @@ class Util():
             try:
                 assert int(value) == route, "对应的" +k+"值，不等于预期"+v
             except Exception as e:
-                TestOrder.error.append(case)
+                # TestOrder.error.append(case)
+                Util.errorlist(id,case)
                 print(f'error对应的{k}值不等于预期{value}：{e}\n')
         else:
             route = v
@@ -256,12 +283,13 @@ class Util():
             try:
                 assert value == route, "对应的" + k + "值，不等于预期" + v
             except Exception as e:
-                TestOrder.error.append(case)
+                Util.errorlist(id, case)
+                # TestOrder.error.append(case)
                 print(f'error对应的{k}值不等于预期{route}值:{e}\n')
 
 
     #进行小于校验
-    def check_nodeText_less(k,v,result,case):
+    def check_nodeText_less(k,v,result,case,id):
 
         if k =='duration':
             value = round(result.elapsed.total_seconds()*1000)
@@ -269,13 +297,15 @@ class Util():
             try:
                 assert int(value) < int(v), "对应的" + k + "值，大于预期" + v
             except Exception as e:
-                TestOrder.error.append(case)
+                # TestOrder.error.append(case)
+                Util.errorlist(id, case)
                 print(f'error对应的{k}值大于预期{v}值:{e}\n')
         else:
             result = json.loads(result.text)
             try:
                 value = jsonpath.jsonpath(result, k)[0]
             except Exception as e:
+                Util.errorlist(id, case)
                 print(f'error用例验证点路径找不到,具体错误如下：{e}\n')
             value = int(value)
             route = int(v)
@@ -283,28 +313,32 @@ class Util():
             try:
                 assert value  <  route, "对应的" + k + "值，大于预期" + route
             except Exception as e:
-                TestOrder.error.append(case)
+                # TestOrder.error.append(case)
+                Util.errorlist(id, case)
                 print(f'error对应的{k}值不大于预期{route}值:{e}\n')
     #进行包含校验
-    def check_nodeText_contains(k,v,result,case):
+    def check_nodeText_contains(k,v,result,case,id):
         result = json.loads(result.text)
         try:
             value = jsonpath.jsonpath(result, k)[0]
         except Exception as e:
+            Util.errorlist(id, case)
             print(f'error用例验证点路径找不到,具体错误如下：{e}\n')
         route = v
         print(f'开始判断{route}是否存在于{value}\n')
         try:
             assert route  in  value, "对应的" + k + "值，不包含预期" + route
         except Exception as e:
-            TestOrder.error.append(case)
+            # TestOrder.error.append(case)
+            Util.errorlist(id, case)
             print(f'error对应的{value}值不包含预期{route}值:{e}\n')
     #进行参数长度校验
-    def check_nodes_count(k,v,result,case):
+    def check_nodes_count(k,v,result,case,id):
         result = json.loads(result.text)
         try:
             value = jsonpath.jsonpath(result, k)[0]
         except Exception as e:
+            Util.errorlist(id, case)
             print(f'error用例验证点路径找不到,具体错误如下：{e}\n')
         route = v
         count=len(str(value))
@@ -312,7 +346,8 @@ class Util():
         try:
             assert count  ==  int(route), "对应的" + k + "值，长度不等于" + route
         except Exception as e:
-            TestOrder.error.append(case)
+            Util.errorlist(id, case)
+            # TestOrder.error.append(case)
             print(f'error对应的{k}值长度不符合预期{route}值:{e}\n')
 
 

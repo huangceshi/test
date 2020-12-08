@@ -100,13 +100,13 @@ class  Http():
             for k in checks:
                 checktype = k['type']
                 if checktype == 'check1':
-                    util.Util.check_nodeText_equals(k['key'], k['value'], result, case)
+                    util.Util.check_nodeText_equals(k['key'], k['value'], result, case,self.runid)
                 elif checktype == 'check2':
-                    util.Util.check_nodeText_less(k['key'], k['value'], result, case)
+                    util.Util.check_nodeText_less(k['key'], k['value'], result, case,self.runid)
                 elif checktype == 'check3':
-                    util.Util.check_nodeText_contains(k['key'], k['value'], result, case)
+                    util.Util.check_nodeText_contains(k['key'], k['value'], result, case,self.runid)
                 elif checktype == 'check4':
-                    util.Util.check_nodes_count(k['key'], k['value'], result, case)
+                    util.Util.check_nodes_count(k['key'], k['value'], result, case,self.runid)
                 else:
                     print(self.testcase + "校验点不对，需要注意检查")
 
@@ -123,7 +123,8 @@ class  Http():
             print(f'{self.casename}:接口开始进行后置sql执行:{postpostposition}')
             result =DB.mysql(self.testcase,self.casename,postpostposition)
             if result > 0:
-                util.Util.dberror(self.testcase)
+                # util.Util.dberror(self.testcase)
+                util.Util.errorlist(self.runid,self.testcase)
 
         #
         #如果存储为list，则进行list循环操作
